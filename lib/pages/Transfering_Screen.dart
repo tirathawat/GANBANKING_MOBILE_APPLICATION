@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ganbanking/widget/find.dart';
-import 'package:ganbanking/widget/listpeople.dart';
-import 'package:ganbanking/widget/listpeople2.dart';
-import 'package:ganbanking/widget/transfer2.dart';
+import 'package:ganbanking/widgets/find.dart';
+import 'package:ganbanking/widgets/listpeople.dart';
+import 'package:ganbanking/widgets/listpeople2.dart';
+import 'package:ganbanking/widgets/transfer2.dart';
 
 class TransferingScreen extends StatelessWidget {
   @override
@@ -25,7 +25,6 @@ class TransferingScreen extends StatelessWidget {
                     fontSize: 18,
                     fontFamily: 'Thasadith',
                     fontWeight: FontWeight.normal),
-                    
               ),
               margin: EdgeInsets.all(20),
             ),
@@ -38,7 +37,6 @@ class TransferingScreen extends StatelessWidget {
             )),
             Expanded(
               child: ListPeople2(),
-              
             ),
           ],
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ganbanking/widget/transfer2.dart';
+import 'package:ganbanking/widgets/transfer2.dart';
 
 class TransferingScreen2 extends StatelessWidget {
   @override
@@ -55,9 +55,11 @@ class TransferingScreen2 extends StatelessWidget {
             ),
             Container(
               child: FindNumfield(),
-              margin: EdgeInsets.fromLTRB(37,8,37, 0),
+              margin: EdgeInsets.fromLTRB(37, 8, 37, 0),
             ),
-            SizedBox(height: 90,),
+            SizedBox(
+              height: 90,
+            ),
             Container(
               width: 340,
               height: 60,
@@ -108,7 +110,11 @@ class TransferingScreen2 extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: Color(0xffffffff), width: 2.5),
           ),
-          prefixIcon: Image.asset("assets/images/fullicon.jpg",width: 10,height: 10,),
+          prefixIcon: Image.asset(
+            "assets/images/fullicon.jpg",
+            width: 10,
+            height: 10,
+          ),
         ),
       ),
     );
