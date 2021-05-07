@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ganbanking/widget/List.dart';
-import 'package:ganbanking/widget/ListPeo.dart';
-import 'package:ganbanking/widget/bluePlus.dart';
 import 'package:ganbanking/widget/find.dart';
+import 'package:ganbanking/widget/listpeople.dart';
+import 'package:ganbanking/widget/listpeople2.dart';
+import 'package:ganbanking/widget/transfer2.dart';
 
 class TransferingScreen extends StatelessWidget {
   @override
@@ -15,7 +15,7 @@ class TransferingScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              child: Center(child: BluePlus()),
+              child: Center(child: TransFer2()),
             ),
             Container(
               child: Text(
@@ -30,14 +30,14 @@ class TransferingScreen extends StatelessWidget {
               margin: EdgeInsets.all(20),
             ),
             Container(
-              child: Center(child: ListPeo()),
+              child: Center(child: ListPeople()),
             ),
             Container(
                 child: Center(
               child: Find(),
             )),
             Expanded(
-              child: ListPro(),
+              child: ListPeople2(),
               
             ),
           ],

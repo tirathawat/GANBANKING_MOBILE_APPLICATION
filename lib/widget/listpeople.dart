@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ListPeo extends StatelessWidget {
+class ListPeople extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

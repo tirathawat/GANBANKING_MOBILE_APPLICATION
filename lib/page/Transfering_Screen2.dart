@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ganbanking/widget/bluePlus2.dart';
+import 'package:ganbanking/widget/transfer2.dart';
 
 class TransferingScreen2 extends StatelessWidget {
   @override
@@ -13,7 +12,7 @@ class TransferingScreen2 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Container(child: BluePlus2()),
+            Container(child: TransFer2()),
             Container(
               child: Text(
                 'ไปยัง',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class BluePlus extends StatelessWidget {
+class TransFer2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

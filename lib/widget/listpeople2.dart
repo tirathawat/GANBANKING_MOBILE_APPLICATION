@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ListPro extends StatelessWidget {
+class ListPeople2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
