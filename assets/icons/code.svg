@@ -1,0 +1,26 @@
+<svg id="qr-code" xmlns="http://www.w3.org/2000/svg" width="17.408" height="17.408" viewBox="0 0 17.408 17.408">
+  <path id="Shape" d="M0,5.78V0H5.78V5.78Z" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle" width="1.36" height="1.36" transform="translate(2.21 2.21)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Shape-2" data-name="Shape" d="M0,5.78V0H5.78V5.78Z" transform="translate(11.628)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-2" data-name="Rectangle" width="1.36" height="1.36" transform="translate(13.838 2.21)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Shape-3" data-name="Shape" d="M0,5.78V0H5.78V5.78Z" transform="translate(0 11.628)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-3" data-name="Rectangle" width="1.36" height="1.36" transform="translate(2.21 13.838)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-4" data-name="Rectangle" width="1.36" height="1.36" transform="translate(1.36 6.698)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Path" d="M1.36,1.36V0H0V1.36H1.326V2.72h1.36V1.36Z" transform="translate(2.72 8.058)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-5" data-name="Rectangle" width="1.36" height="1.36" transform="translate(9.52 2.618)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-6" data-name="Rectangle" width="1.36" height="2.618" transform="translate(6.8 1.36)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-7" data-name="Rectangle" width="1.36" height="1.36" transform="translate(8.16)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Path-2" data-name="Path" d="M1.36,0V1.36H0V2.72H2.72V0Z" transform="translate(6.8 3.978)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Path-3" data-name="Path" d="M2.72,4.012V2.686H1.36V0H0V2.72H1.36V4.046H2.72V5.372H5.44V4.012Z" transform="translate(6.8 8.058)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-8" data-name="Rectangle" width="1.36" height="2.72" transform="translate(9.52 6.698)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Shape-4" data-name="Shape" d="M1.36,4.046V2.72H0V1.36H1.326V0H3.808V1.326h1.36V4.046Z" transform="translate(12.24 6.698)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-9" data-name="Rectangle" width="1.36" height="2.72" transform="translate(16.048 12.07)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-10" data-name="Rectangle" width="1.36" height="1.36" transform="translate(10.88 9.418)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-11" data-name="Rectangle" width="1.36" height="1.36" transform="translate(12.24 13.43)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-12" data-name="Rectangle" width="1.36" height="1.36" transform="translate(13.6 12.07)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Path-4" data-name="Path" d="M0,0V2.618H1.36V1.36H2.448V0Z" transform="translate(13.6 14.79)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-13" data-name="Rectangle" width="1.36" height="2.584" transform="translate(6.8 12.104)" fill="rgba(255,255,255,0.6)"/>
+  <path id="Path-5" data-name="Path" d="M2.72,1.36V0H0V2.72H1.36V1.36H2.686V2.72h1.36V1.36Z" transform="translate(8.16 14.688)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-14" data-name="Rectangle" width="2.72" height="1.36" transform="translate(4.08 6.698)" fill="rgba(255,255,255,0.6)"/>
+  <rect id="Rectangle-15" data-name="Rectangle" width="1.36" height="2.72" transform="translate(0 8.058)" fill="rgba(255,255,255,0.6)"/>
+</svg>
