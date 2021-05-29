@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/constants/assets.dart';
 import 'package:ganbanking/widgets/default_button.dart';
 
 class ReceiptPage extends StatelessWidget {
@@ -244,7 +245,7 @@ class ReceiptPage extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SvgPicture.asset(
-          'assets/icons/Ss.svg',
+          Assets.SUCCESS_BACKGROUND,
         ),
         Text(
           'สำเร็จ!',

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/pages/mobile_number_page.dart';
+import 'package:ganbanking/pages/sign_in_page_3.dart';
+import 'package:get/get.dart';
 
 class SignInPage2 extends StatelessWidget {
   @override
@@ -23,9 +26,8 @@ class SignInPage2 extends StatelessWidget {
               Text(
                 "ใช้งานง่าย",
                 style: TextStyle(
-                    fontSize: 35,
-                    fontFamily: 'Thasadith',
-                    fontWeight: FontWeight.w900,
+                    fontSize: getScreenWidth(35),
+                    fontWeight: FontWeight.w700,
                     color: Color(0xffffffff)),
               ),
               SizedBox(
@@ -34,10 +36,7 @@ class SignInPage2 extends StatelessWidget {
               Text(
                 "เพียงเเค่ปลายนิ้ว ก็สามารถทำธุรกรรมได้",
                 style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Thasadith',
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xffffffff)),
+                    fontSize: getScreenWidth(15), color: Color(0xffffffff)),
               ),
               SizedBox(
                 height: 84,
@@ -60,35 +59,27 @@ class SignInPage2 extends StatelessWidget {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(SignInPage3());
+                  },
                   child: Text(
                     'ต่อไป',
                     style: TextStyle(
                       fontSize: getScreenWidth(17),
-                      color: Color(0xff1C75FF),
+                      color: Colors.black,
                     ),
                   ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
+                  vertical: 18,
                   horizontal: getScreenWidth(40),
                 ),
-                child: OutlinedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(
-                        vertical: 15,
-                      ),
-                    ),
-                    minimumSize:
-                        MaterialStateProperty.all(Size(double.infinity, 0)),
-                    backgroundColor:
-                        MaterialStateProperty.all(Color(0xff1C75FF)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-                  ),
-                  onPressed: () {},
+                child: GestureDetector(
+                  onTap: () {
+                    Get.to(MobileNumberPage());
+                  },
                   child: Text(
                     'ข้าม',
                     style: TextStyle(

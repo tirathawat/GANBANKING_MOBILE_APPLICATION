@@ -5,4 +5,5 @@ class Assets {
   static const PEOPLE = '$BASE_ICON/people.svg';
   static const BANK = '$BASE_ICON/bank.svg';
   static const SEARCH = '$BASE_ICON/search.svg';
+  static const SUCCESS_BACKGROUND = '$BASE_ICON/success_background.svg';
 }
