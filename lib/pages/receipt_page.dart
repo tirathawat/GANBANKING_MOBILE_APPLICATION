@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/widgets/default_button.dart';
 
 class ReceiptPage extends StatelessWidget {
   @override
@@ -34,26 +35,15 @@ class ReceiptPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: getScreenWidth(40),
       ),
-      child: OutlinedButton(
-        style: ButtonStyle(
-          padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(
-              vertical: 15,
-            ),
-          ),
-          minimumSize: MaterialStateProperty.all(Size(double.infinity, 0)),
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-        ),
-        onPressed: () {},
-        child: Text(
+      child: Defaultbutton(
+        text: Text(
           'กลับหน้าหลัก',
           style: TextStyle(
             fontSize: getScreenWidth(20),
             color: Color(0xff000000),
           ),
         ),
+        color: Colors.white,
       ),
     );
   }

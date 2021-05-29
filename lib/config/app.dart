@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/pages/receipt_page.dart';
+import 'package:ganbanking/pages/second_transfering_page.dart';
 
 class App extends StatelessWidget {
   @override
