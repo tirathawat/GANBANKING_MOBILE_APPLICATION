@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:ganbanking/pages/qr_scan_page.dart';
+import 'package:ganbanking/pages/second_transfering_page.dart';
+import 'package:get/get.dart';
 
 class FirstTransferingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _buildAppBar(),
       backgroundColor: Color(0xFFF9F9FB),
       body: Column(
         verticalDirection: VerticalDirection.down,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopMenu(),
           _buildFav(),
           _buildContactSearch(),
           _buildContactList(),
@@ -21,77 +24,84 @@ class FirstTransferingPage extends StatelessWidget {
     );
   }
 
-  _buildTopMenu() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: getScreenWidth(60),
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
+  AppBar _buildAppBar() {
+    return AppBar(
+      elevation: 0,
+      centerTitle: true,
+      title: Text("โอนเงิน"),
+      backgroundColor: Color(0xff1C75FF),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(30),
         ),
-        color: Color(0xff1C75FF),
       ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              'โอนเงิน',
-              style: TextStyle(
-                fontSize: getScreenWidth(20),
-                color: Color(0xffFFFFFF),
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(120),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            getScreenWidth(60),
+            0,
+            getScreenWidth(60),
+            20,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildMenuButton(
+                "G Bank",
+                Assets.PEOPLE,
+                SecondTransferingPage(),
               ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildMenuButton("G Bank", Assets.PEOPLE),
-                _buildMenuButton("ต่างธนาคาร", Assets.BANK),
-                _buildMenuButton("QR code", Assets.QRCODE),
-              ],
-            ),
-          ],
+              _buildMenuButton(
+                "ต่างธนาคาร",
+                Assets.BANK,
+                SecondTransferingPage(),
+              ),
+              _buildMenuButton(
+                "Scan QR",
+                Assets.QRCODE,
+                QRScanPage(),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Column _buildMenuButton(String text, String icon) {
-    return Column(
-      children: [
-        Container(
-          width: 62,
-          height: 62,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(19),
-            color: Color(0xff47AEFC),
+  _buildMenuButton(String text, String icon, dynamic page) {
+    return InkWell(
+      onTap: () {
+        Get.to(page);
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 62,
+            height: 62,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(19),
+              color: Color(0xff47AEFC),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
+              child: SvgPicture.asset(
+                icon,
+                color: Colors.white,
+              ),
+            ),
+            margin: EdgeInsets.only(bottom: 8),
           ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
-            child: SvgPicture.asset(
-              icon,
-              color: Colors.white,
+          Text(
+            text,
+            style: TextStyle(
+              color: Color(0xffFFFFFF),
+              fontSize: getScreenWidth(12),
+              fontWeight: FontWeight.bold,
             ),
           ),
-          margin: EdgeInsets.only(bottom: 8),
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            color: Color(0xffFFFFFF),
-            fontSize: getScreenWidth(12),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -111,14 +121,23 @@ class FirstTransferingPage extends StatelessWidget {
   _buildFavButton(String image, String name, String phone) {
     return Container(
       margin: EdgeInsets.only(
+        top: 10,
         right: 10,
+        bottom: 10,
       ),
-      padding: EdgeInsets.only(bottom: 20),
       height: 164,
       width: 142,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Color(0xFFFFFFFF),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            spreadRadius: 3,
+            blurRadius: 3,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
       ),
       child: Column(
         children: [

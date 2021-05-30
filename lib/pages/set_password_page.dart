@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/account_create_success_page.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class VerifyingNumberOnePage extends StatelessWidget {
+import 'home_page.dart';
+
+class SetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,12 +13,12 @@ class VerifyingNumberOnePage extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Column(
-            children: [
+            children: <Widget>[
               SizedBox(
                 height: 62,
               ),
               Text(
-                "เริ่มต้นใช้งาน",
+                "ตั้งค่ารหัสผ่าน",
                 style: TextStyle(
                   fontSize: getScreenWidth(35),
                   fontWeight: FontWeight.w700,
@@ -27,13 +28,13 @@ class VerifyingNumberOnePage extends StatelessWidget {
                 height: 26,
               ),
               Text(
-                "กรุณากรอกรหัสที่ได้รับ เพื่อเริ่มต้นใช้งาน",
+                "สำหรับใช้ในการทำธุรกรรม",
                 style: TextStyle(
                   fontSize: getScreenWidth(15),
                 ),
               ),
               SizedBox(
-                height: 118,
+                height: 60,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -84,10 +85,10 @@ class VerifyingNumberOnePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10))),
                   ),
                   onPressed: () {
-                    Get.to(AccountCreateSuccess());
+                    Get.to(HomePage());
                   },
                   child: Text(
-                    'ยืนยัน',
+                    'บันทึก',
                     style: TextStyle(
                       fontSize: getScreenWidth(17),
                       color: Color(0xffffffff),

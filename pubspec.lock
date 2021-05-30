@@ -49,7 +49,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   equatable:
     dependency: transitive
     description:
@@ -156,7 +156,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
-<<<<<<< HEAD
   path_drawing:
     dependency: transitive
     description:
@@ -171,6 +170,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.1"
+  percent_indicator:
+    dependency: "direct main"
+    description:
+      name: percent_indicator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   petitparser:
     dependency: transitive
     description:
@@ -192,15 +198,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-=======
-  pin_code_text_field:
-    dependency: "direct main"
-    description:
-      name: pin_code_text_field
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.8.0"
->>>>>>> petch
   sky_engine:
     dependency: transitive
     description: flutter
@@ -268,10 +265,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-<<<<<<< HEAD
   flutter: ">=2.0.0"
-=======
->>>>>>> petch

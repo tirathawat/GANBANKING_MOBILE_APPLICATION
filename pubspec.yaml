@@ -21,10 +21,10 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  pin_code_text_field: 1.8.0
   flutter:
     sdk: flutter
     
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -33,6 +33,7 @@ dependencies:
   get: ^4.1.4
   intl_phone_number_input: ^0.7.0+2
   pin_code_fields: ^7.2.0
+  percent_indicator: ^3.0.1
 
 
 
@@ -45,31 +46,17 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
- fonts:
-   - family:  Thasadith-Regular
-     fonts:
-       - asset: assets/Thasadith-Regular.ttf
-   - family:  Thasadith-Bold
-     fonts:
-       - asset: assets/Thasadith-Bold.ttf
- assets:
-     - assets/like.png
-     - assets/like.svg
-     - assets/send.png
-     - assets/up.png
-     - assets/file.png
-     - assets/get12.png
-     - assets/newfile.png
-     - assets/newsend.png
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
- uses-material-design: true
+  uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

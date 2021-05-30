@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:ganbanking/pages/home_page.dart';
 import 'package:ganbanking/widgets/default_button.dart';
+import 'package:get/get.dart';
 
 class ReceiptPage extends StatelessWidget {
   @override
@@ -37,6 +39,9 @@ class ReceiptPage extends StatelessWidget {
         horizontal: getScreenWidth(40),
       ),
       child: Defaultbutton(
+        onPress: () {
+          Get.to(HomePage());
+        },
         text: Text(
           'กลับหน้าหลัก',
           style: TextStyle(

@@ -8,30 +8,31 @@ class MyQrCodePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff1C75FF),
+      appBar: _buildAppBar(),
       body: _buildBody(),
     );
   }
+
+  AppBar _buildAppBar() => AppBar(
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          'My QR Code',
+          style: TextStyle(
+            color: Color(0xffffffff),
+            //fontFamily: 'DMSans',
+            fontSize: getScreenWidth(20),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
 
   SafeArea _buildBody() {
     return SafeArea(
       child: Center(
         child: Column(
           children: [
-            SizedBox(
-              height: getScreenHeight(50),
-            ),
-            Text(
-              'My QR Code',
-              style: TextStyle(
-                color: Color(0xffffffff),
-                //fontFamily: 'DMSans',
-                fontSize: getScreenWidth(20),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(
-              height: getScreenHeight(67),
-            ),
             _buildQrBox(),
           ],
         ),
@@ -45,6 +46,7 @@ class MyQrCodePage extends StatelessWidget {
           getScreenWidth(13), getScreenHeight(50)),
       margin: EdgeInsets.symmetric(
         horizontal: getScreenWidth(40),
+        vertical: 100,
       ),
       width: double.infinity,
       decoration: BoxDecoration(

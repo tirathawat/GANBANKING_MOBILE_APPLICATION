@@ -21,6 +21,7 @@ class QRScanPage extends StatelessWidget {
 
   AppBar _buildAppbar() {
     return AppBar(
+      centerTitle: true,
       title: Text("แสกน"),
       backgroundColor: Color(0xff1C75FF),
       shape: RoundedRectangleBorder(
