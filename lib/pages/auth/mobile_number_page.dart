@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/services/firebase_service.dart';
+import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'verifying_number_page.dart';
 
 class MobileNumberPage extends StatelessWidget {
   final TextEditingController phoneController = TextEditingController();
@@ -90,9 +91,19 @@ class MobileNumberPage extends StatelessWidget {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_validated.value) {
-                      FirebaseService.requestOtp(phoneController.text);
+                      Get.dialog(CustomProgressIndicator());
+
+                      bool hasCustomer = await CustomerAPI.hasCustomer(
+                          phoneController.text.replaceFirst("+66", "0"));
+                      Get.back();
+                      if (hasCustomer) {
+                        await FirebaseService.requestOtp(phoneController.text);
+                      } else {
+                        Get.snackbar(
+                            "แจ้งเตือน", "ท่านยังไม่ได้ทำการเปิดบัญชี");
+                      }
                     } else {
                       Get.snackbar("แจ้งเตือน", "เบอร์โทรไม่ถูกต้อง");
                     }
