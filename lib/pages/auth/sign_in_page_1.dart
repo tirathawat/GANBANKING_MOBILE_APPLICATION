@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/sign_in_page_2.dart';
+import 'package:ganbanking/pages/auth/sign_in_page_2.dart';
 import 'package:get/get.dart';
 
 import 'mobile_number_page.dart';

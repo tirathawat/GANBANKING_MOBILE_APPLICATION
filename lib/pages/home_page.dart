@@ -6,7 +6,7 @@ import 'package:ganbanking/constants/assets.dart';
 import 'package:ganbanking/pages/change_account_page.dart';
 import 'package:ganbanking/pages/first_transfering_page.dart';
 import 'package:ganbanking/pages/my_qrcode_page.dart';
-import 'package:ganbanking/pages/sign_in_page_1.dart';
+import 'package:ganbanking/pages/auth/sign_in_page_1.dart';
 import 'package:ganbanking/pages/summary_page.dart';
 import 'package:get/get.dart';
 

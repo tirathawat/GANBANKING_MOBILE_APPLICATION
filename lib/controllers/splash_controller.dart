@@ -1,4 +1,4 @@
-import 'package:ganbanking/pages/sign_in_page_1.dart';
+import 'package:ganbanking/pages/auth/sign_in_page_1.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {

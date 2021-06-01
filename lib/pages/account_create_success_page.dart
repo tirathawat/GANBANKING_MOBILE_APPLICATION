@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
-import 'package:ganbanking/pages/set_password_page.dart';
+import 'package:ganbanking/pages/auth/set_password_page.dart';
 import 'package:get/get.dart';
 
 class AccountCreateSuccess extends StatelessWidget {

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/verifying_number__one_page.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class VerifyingNumberPage extends StatelessWidget {
+import '../home_page.dart';
+
+class SetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +18,7 @@ class VerifyingNumberPage extends StatelessWidget {
                 height: 62,
               ),
               Text(
-                "ยืนยันตัวตน",
+                "ตั้งค่ารหัสผ่าน",
                 style: TextStyle(
                   fontSize: getScreenWidth(35),
                   fontWeight: FontWeight.w700,
@@ -27,18 +28,9 @@ class VerifyingNumberPage extends StatelessWidget {
                 height: 26,
               ),
               Text(
-                "กรุณากรอกรหัสผ่าน 4 รหัสที่ส่งไปยัง",
+                "สำหรับใช้ในการทำธุรกรรม",
                 style: TextStyle(
                   fontSize: getScreenWidth(15),
-                ),
-              ),
-              SizedBox(),
-              Text(
-                "+66 864062057",
-                style: TextStyle(
-                  fontSize: getScreenWidth(18),
-                  color: Color(0xff003DFF),
-                  fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(
@@ -73,27 +65,6 @@ class VerifyingNumberPage extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(
-                height: 40,
-              ),
-              Text(
-                "ยังไม่ได้รับรหัสผ่าน ?",
-                style: TextStyle(
-                  fontSize: getScreenWidth(15),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "ส่งใหม่",
-                style: TextStyle(
-                  fontSize: getScreenWidth(18),
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  color: Color(0xff003DFF),
-                ),
-              ),
               Spacer(),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -114,10 +85,10 @@ class VerifyingNumberPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10))),
                   ),
                   onPressed: () {
-                    Get.to(VerifyingNumberOnePage());
+                    Get.to(HomePage());
                   },
                   child: Text(
-                    'ยืนยัน',
+                    'บันทึก',
                     style: TextStyle(
                       fontSize: getScreenWidth(17),
                       color: Color(0xffffffff),

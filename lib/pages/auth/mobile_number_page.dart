@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/services/firebase_service.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'verifying_number_page.dart';
 
 class MobileNumberPage extends StatelessWidget {
+  final TextEditingController phoneController = TextEditingController();
+  final RxBool _validated = false.obs;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,15 +47,18 @@ class MobileNumberPage extends StatelessWidget {
                     print(number.phoneNumber);
                   },
                   onInputValidated: (bool value) {
-                    print(value);
+                    _validated.value = value;
                   },
                   selectorConfig: SelectorConfig(
                     selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                   ),
+                  initialValue: PhoneNumber(isoCode: 'TH'),
                   ignoreBlank: false,
+                  cursorColor: Color(0xFF1C75FF),
                   autoValidateMode: AutovalidateMode.disabled,
                   selectorTextStyle: TextStyle(color: Colors.black),
                   formatInput: true,
+                  textFieldController: phoneController,
                   keyboardType: TextInputType.numberWithOptions(
                       signed: true, decimal: true),
                   inputBorder: OutlineInputBorder(
@@ -85,7 +91,11 @@ class MobileNumberPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10))),
                   ),
                   onPressed: () {
-                    Get.to(VerifyingNumberPage());
+                    if (_validated.value) {
+                      FirebaseService.requestOtp(phoneController.text);
+                    } else {
+                      Get.snackbar("แจ้งเตือน", "เบอร์โทรไม่ถูกต้อง");
+                    }
                   },
                   child: Text(
                     'ส่งรหัสผ่าน',

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/mobile_number_page.dart';
+import 'package:ganbanking/pages/auth/mobile_number_page.dart';
+import 'package:ganbanking/pages/auth/sign_in_page_3.dart';
 import 'package:get/get.dart';
 
-class SignInPage3 extends StatelessWidget {
+class SignInPage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,12 +19,12 @@ class SignInPage3 extends StatelessWidget {
               Container(
                   width: 245.5,
                   height: 245.5,
-                  child: Image.asset('assets/images/handshake.png')),
+                  child: Image.asset('assets/images/tap.png')),
               SizedBox(
                 height: 84,
               ),
               Text(
-                "เชื่อมต่อกับทุกคน ทั่วโลก",
+                "ใช้งานง่าย",
                 style: TextStyle(
                     fontSize: getScreenWidth(35),
                     fontWeight: FontWeight.w700,
@@ -33,7 +34,7 @@ class SignInPage3 extends StatelessWidget {
                 height: 21,
               ),
               Text(
-                "ให้การเชื่อมต่อของคุณ ปลอดภัย เเละทั่วถึง",
+                "เพียงเเค่ปลายนิ้ว ก็สามารถทำธุรกรรมได้",
                 style: TextStyle(
                     fontSize: getScreenWidth(15), color: Color(0xffffffff)),
               ),
@@ -59,10 +60,10 @@ class SignInPage3 extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10))),
                   ),
                   onPressed: () {
-                    Get.to(MobileNumberPage());
+                    Get.to(SignInPage3());
                   },
                   child: Text(
-                    'เริ่มต้นใช้งาน',
+                    'ต่อไป',
                     style: TextStyle(
                       fontSize: getScreenWidth(17),
                       color: Colors.black,
@@ -80,7 +81,7 @@ class SignInPage3 extends StatelessWidget {
                     Get.to(MobileNumberPage());
                   },
                   child: Text(
-                    'เข้าสู่ระบบด้วยเบอร์โทรศัพท์',
+                    'ข้าม',
                     style: TextStyle(
                       fontSize: getScreenWidth(17),
                       color: Color(0xffffffff),

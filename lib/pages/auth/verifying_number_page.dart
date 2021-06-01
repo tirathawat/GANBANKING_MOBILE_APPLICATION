@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/account_create_success_page.dart';
+import 'package:ganbanking/pages/auth/set_password_page.dart';
+import 'package:ganbanking/services/firebase_service.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class VerifyingNumberOnePage extends StatelessWidget {
+class VerifyingNumberPage extends StatelessWidget {
+  final String phoneNumber;
+  final TextEditingController otpController = TextEditingController();
+  VerifyingNumberPage({Key key, this.phoneNumber}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,12 +16,12 @@ class VerifyingNumberOnePage extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Column(
-            children: [
+            children: <Widget>[
               SizedBox(
                 height: 62,
               ),
               Text(
-                "เริ่มต้นใช้งาน",
+                "ยืนยันตัวตน",
                 style: TextStyle(
                   fontSize: getScreenWidth(35),
                   fontWeight: FontWeight.w700,
@@ -27,13 +31,22 @@ class VerifyingNumberOnePage extends StatelessWidget {
                 height: 26,
               ),
               Text(
-                "กรุณากรอกรหัสที่ได้รับ เพื่อเริ่มต้นใช้งาน",
+                "กรุณากรอกรหัสผ่าน 6 รหัสที่ส่งไปยัง",
                 style: TextStyle(
                   fontSize: getScreenWidth(15),
                 ),
               ),
+              SizedBox(),
+              Text(
+                phoneNumber,
+                style: TextStyle(
+                  fontSize: getScreenWidth(18),
+                  color: Color(0xff003DFF),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               SizedBox(
-                height: 118,
+                height: 60,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -43,6 +56,8 @@ class VerifyingNumberOnePage extends StatelessWidget {
                   appContext: context,
                   length: 6,
                   obscureText: false,
+                  cursorColor: Color(0xFF1C75FF),
+                  controller: otpController,
                   pinTheme: PinTheme(
                     shape: PinCodeFieldShape.underline,
                     fieldHeight: 50,
@@ -64,6 +79,27 @@ class VerifyingNumberOnePage extends StatelessWidget {
                   },
                 ),
               ),
+              SizedBox(
+                height: 40,
+              ),
+              Text(
+                "ยังไม่ได้รับรหัสผ่าน ?",
+                style: TextStyle(
+                  fontSize: getScreenWidth(15),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "ส่งใหม่",
+                style: TextStyle(
+                  fontSize: getScreenWidth(18),
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                  color: Color(0xff003DFF),
+                ),
+              ),
               Spacer(),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -83,8 +119,14 @@ class VerifyingNumberOnePage extends StatelessWidget {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                   ),
-                  onPressed: () {
-                    Get.to(AccountCreateSuccess());
+                  onPressed: () async {
+                    await FirebaseService.signIn(otpController.text)
+                        .then((value) {
+                      if (value)
+                        Get.to(SetPasswordPage());
+                      else
+                        Get.snackbar("แจ้งเตือน", "OTP ไม่ถูกต้อง");
+                    });
                   },
                   child: Text(
                     'ยืนยัน',

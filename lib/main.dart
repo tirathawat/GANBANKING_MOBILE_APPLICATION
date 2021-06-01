@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:ganbanking/config/app.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp().then((value) => print("INITIALIZED FIREBASE"));
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.transparent,
