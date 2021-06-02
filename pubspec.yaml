@@ -37,6 +37,8 @@ dependencies:
   firebase_auth: ^1.2.0
   firebase_core: ^1.2.0
   http: ^0.13.3
+  keyboard_dismisser: ^2.0.0
+  intl: ^0.17.0
 
 
 

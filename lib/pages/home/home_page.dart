@@ -1,16 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
-import 'package:ganbanking/pages/change_account_page.dart';
-import 'package:ganbanking/pages/first_transfering_page.dart';
-import 'package:ganbanking/pages/my_qrcode_page.dart';
-import 'package:ganbanking/pages/auth/sign_in_page_1.dart';
-import 'package:ganbanking/pages/summary_page.dart';
+
+import 'package:ganbanking/pages/auth/2_sign_in_page_1.dart';
+import 'package:ganbanking/pages/home/summary_page.dart';
+import 'package:ganbanking/pages/transfer/first_transfering_page.dart';
+import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import 'change_account_page.dart';
+import 'my_qrcode_page.dart';
 
 class HomePage extends StatelessWidget {
+  final AccountAPI accountAPI = Get.put(AccountAPI());
+
+  HomePage({Key key}) : super(key: key);
   hexColor(String colorhexcode) {
     String colornew = '0xff' + colorhexcode;
     colornew = colornew.replaceAll('#', '');
@@ -55,9 +65,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Get.to(SignInPage1());
-                  },
+                  onTap: _onSignOut,
                   child: SvgPicture.asset(
                     Assets.LOGOUT,
                     color: Colors.white,
@@ -65,22 +73,26 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                      text: '\n7,425',
-                      style: TextStyle(
-                        fontSize: getScreenWidth(35),
-                        color: Color(hexColor('#FFFFFF')),
-                      )),
-                  TextSpan(
-                      text: ' บาท',
-                      style: TextStyle(
-                        fontSize: getScreenWidth(25),
-                        color: Color(hexColor('#FFFFFF')),
-                      )),
-                ],
+            Obx(
+              () => RichText(
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                        text: accountAPI.accounts.value == null
+                            ? '0.00'
+                            : '${NumberFormat.currency().format(accountAPI.accounts.value[accountAPI.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
+                        style: TextStyle(
+                          fontSize: getScreenWidth(35),
+                          color: Color(hexColor('#FFFFFF')),
+                        )),
+                    TextSpan(
+                        text: ' บาท',
+                        style: TextStyle(
+                          fontSize: getScreenWidth(25),
+                          color: Color(hexColor('#FFFFFF')),
+                        )),
+                  ],
+                ),
               ),
             ),
             SizedBox(
@@ -89,16 +101,20 @@ class HomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "บัญชีออมทรัพย์ XXX-X-X3666-X",
-                  style: TextStyle(
-                    fontSize: getScreenWidth(15),
-                    color: Colors.white.withOpacity(.8),
+                Obx(
+                  () => Text(
+                    accountAPI.accounts.value == null
+                        ? 'บัญชีออมทรัพย์ '
+                        : "บัญชีออมทรัพย์ ${Util.formatAccountNo(accountAPI.accounts.value[accountAPI.selectedAccount.value].accountNo.toString())}",
+                    style: TextStyle(
+                      fontSize: getScreenWidth(15),
+                      color: Colors.white.withOpacity(.8),
+                    ),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(ChangeAccountPage());
+                    Get.to(() => ChangeAccountPage());
                   },
                   child: Text(
                     "เปลี่ยนบัญชี",
@@ -140,10 +156,21 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _onSignOut() async {
+    Get.dialog(CustomProgressIndicator());
+    await FirebaseAuth.instance.signOut().then((value) {
+      Get.back();
+      Get.offAll(() => SignInPage1());
+    });
   }
 
   _buildContent() {
@@ -304,8 +331,12 @@ class HomePage extends StatelessWidget {
         borderRadius: const BorderRadius.all(const Radius.circular(8)),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SvgPicture.asset(Assets.PROMOTION),
+          SvgPicture.asset(
+            Assets.PROMOTION,
+            fit: BoxFit.cover,
+          ),
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 20,

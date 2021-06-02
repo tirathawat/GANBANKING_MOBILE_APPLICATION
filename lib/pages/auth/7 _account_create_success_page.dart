@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
-import 'package:ganbanking/pages/auth/set_password_page.dart';
+import 'package:ganbanking/controllers/variable_controller.dart';
+import 'package:ganbanking/pages/auth/8_set_password_page.dart';
+import 'package:ganbanking/pages/home/home_page.dart';
 import 'package:get/get.dart';
 
 class AccountCreateSuccess extends StatelessWidget {
+  final VariableController variableController = Get.find<VariableController>();
+
+  AccountCreateSuccess({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,9 +61,7 @@ class AccountCreateSuccess extends StatelessWidget {
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10))),
                 ),
-                onPressed: () {
-                  Get.to(SetPasswordPage());
-                },
+                onPressed: _onPressButton,
                 child: Text(
                   'ยืนยัน',
                   style: TextStyle(
@@ -95,5 +99,16 @@ class AccountCreateSuccess extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onPressButton() async {
+    await CustomerAPI.hasCustomerKey(
+            variableController.phoneController.text.replaceAll("+66", "0"))
+        .then((value) {
+      if (value)
+        Get.to(() => SetPasswordPage());
+      else
+        Get.to(() => HomePage());
+    });
   }
 }

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ganbanking/pages/auth/verifying_number_page.dart';
+import 'package:ganbanking/pages/auth/6_verifying_number_page.dart';
 import 'package:get/get.dart';
 
 class FirebaseService {
@@ -24,9 +24,7 @@ class FirebaseService {
           _verificationId = code;
           print("verificationId: $code");
 
-          Get.to(VerifyingNumberPage(
-            phoneNumber: phoneNumber,
-          ));
+          Get.to(() => VerifyingNumberPage());
         },
         codeAutoRetrievalTimeout: (String timeout) {});
   }

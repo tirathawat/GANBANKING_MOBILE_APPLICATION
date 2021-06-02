@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/controllers/variable_controller.dart';
+import 'package:ganbanking/pages/home/home_page.dart';
+import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../home_page.dart';
-
 class SetPasswordPage extends StatelessWidget {
+  final VariableController variableController = Get.find<VariableController>();
+  final TextEditingController passwordController = TextEditingController();
+  SetPasswordPage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +18,7 @@ class SetPasswordPage extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Column(
-            children: <Widget>[
+            children: [
               SizedBox(
                 height: 62,
               ),
@@ -56,6 +61,7 @@ class SetPasswordPage extends StatelessWidget {
                     inactiveFillColor: Colors.black,
                     selectedFillColor: Colors.black,
                   ),
+                  controller: passwordController,
                   keyboardType: TextInputType.number,
                   onCompleted: (v) {
                     print("Completed");
@@ -84,9 +90,7 @@ class SetPasswordPage extends StatelessWidget {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                   ),
-                  onPressed: () {
-                    Get.to(HomePage());
-                  },
+                  onPressed: _onPressButton,
                   child: Text(
                     'บันทึก',
                     style: TextStyle(
@@ -125,5 +129,18 @@ class SetPasswordPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onPressButton() async {
+    Get.dialog(CustomProgressIndicator());
+    await CustomerAPI.createCustomerKey(
+            variableController.phoneController.text, passwordController.text)
+        .then((value) {
+      Get.back();
+      if (value)
+        Get.offAll(() => HomePage());
+      else
+        Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
+    });
   }
 }

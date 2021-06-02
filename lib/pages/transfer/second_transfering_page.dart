@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/receipt_page.dart';
+import 'package:ganbanking/pages/transfer/receipt_page.dart';
 import 'package:ganbanking/widgets/default_button.dart';
 import 'package:get/get.dart';
 
@@ -168,7 +168,7 @@ class SecondTransferingPage extends StatelessWidget {
             Spacer(),
             Defaultbutton(
               onPress: () {
-                Get.to(ReceiptPage());
+                Get.to(() => ReceiptPage());
               },
               text: Text(
                 'โอนเงิน',

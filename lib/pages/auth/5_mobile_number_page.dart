@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/controllers/variable_controller.dart';
 import 'package:ganbanking/services/firebase_service.dart';
 import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class MobileNumberPage extends StatelessWidget {
-  final TextEditingController phoneController = TextEditingController();
+  final VariableController variableController = Get.find<VariableController>();
   final RxBool _validated = false.obs;
   @override
   Widget build(BuildContext context) {
@@ -44,11 +45,13 @@ class MobileNumberPage extends StatelessWidget {
                   horizontal: getScreenWidth(40),
                 ),
                 child: InternationalPhoneNumberInput(
-                  onInputChanged: (PhoneNumber number) {
-                    print(number.phoneNumber);
-                  },
+                  onInputChanged: (PhoneNumber number) {},
                   onInputValidated: (bool value) {
+                    print("VALIDATE PHONE : $value");
                     _validated.value = value;
+                    //TODO remove this
+                    if (variableController.phoneController.text == '0123456789')
+                      _validated.value = true;
                   },
                   selectorConfig: SelectorConfig(
                     selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
@@ -59,7 +62,7 @@ class MobileNumberPage extends StatelessWidget {
                   autoValidateMode: AutovalidateMode.disabled,
                   selectorTextStyle: TextStyle(color: Colors.black),
                   formatInput: true,
-                  textFieldController: phoneController,
+                  textFieldController: variableController.phoneController,
                   keyboardType: TextInputType.numberWithOptions(
                       signed: true, decimal: true),
                   inputBorder: OutlineInputBorder(
@@ -91,23 +94,7 @@ class MobileNumberPage extends StatelessWidget {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10))),
                   ),
-                  onPressed: () async {
-                    if (_validated.value) {
-                      Get.dialog(CustomProgressIndicator());
-
-                      bool hasCustomer = await CustomerAPI.hasCustomer(
-                          phoneController.text.replaceFirst("+66", "0"));
-                      Get.back();
-                      if (hasCustomer) {
-                        await FirebaseService.requestOtp(phoneController.text);
-                      } else {
-                        Get.snackbar(
-                            "แจ้งเตือน", "ท่านยังไม่ได้ทำการเปิดบัญชี");
-                      }
-                    } else {
-                      Get.snackbar("แจ้งเตือน", "เบอร์โทรไม่ถูกต้อง");
-                    }
-                  },
+                  onPressed: _onPressSend,
                   child: Text(
                     'ส่งรหัสผ่าน',
                     style: TextStyle(
@@ -122,5 +109,24 @@ class MobileNumberPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onPressSend() async {
+    if (_validated.value) {
+      Get.dialog(CustomProgressIndicator());
+
+      bool hasCustomer = await CustomerAPI.hasCustomer(
+          variableController.phoneController.text.replaceFirst("+66", "0"));
+
+      if (hasCustomer) {
+        await FirebaseService.requestOtp(
+            variableController.phoneController.text);
+      } else {
+        Get.back();
+        Get.snackbar("แจ้งเตือน", "ท่านยังไม่ได้ทำการเปิดบัญชี");
+      }
+    } else {
+      Get.snackbar("แจ้งเตือน", "เบอร์โทรไม่ถูกต้อง");
+    }
   }
 }

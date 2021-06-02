@@ -1,14 +1,18 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/auth/set_password_page.dart';
+import 'package:ganbanking/controllers/variable_controller.dart';
 import 'package:ganbanking/services/firebase_service.dart';
+import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import '7 _account_create_success_page.dart';
 
 class VerifyingNumberPage extends StatelessWidget {
-  final String phoneNumber;
+  final VariableController variableController = Get.find<VariableController>();
   final TextEditingController otpController = TextEditingController();
-  VerifyingNumberPage({Key key, this.phoneNumber}) : super(key: key);
+  VerifyingNumberPage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +20,7 @@ class VerifyingNumberPage extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Column(
-            children: <Widget>[
+            children: [
               SizedBox(
                 height: 62,
               ),
@@ -38,7 +42,7 @@ class VerifyingNumberPage extends StatelessWidget {
               ),
               SizedBox(),
               Text(
-                phoneNumber,
+                variableController.phoneController.text,
                 style: TextStyle(
                   fontSize: getScreenWidth(18),
                   color: Color(0xff003DFF),
@@ -121,12 +125,7 @@ class VerifyingNumberPage extends StatelessWidget {
                   ),
                   onPressed: () async {
                     await FirebaseService.signIn(otpController.text)
-                        .then((value) {
-                      if (value)
-                        Get.to(SetPasswordPage());
-                      else
-                        Get.snackbar("แจ้งเตือน", "OTP ไม่ถูกต้อง");
-                    });
+                        .then(_onVerifyPhoneComplete);
                   },
                   child: Text(
                     'ยืนยัน',
@@ -166,5 +165,21 @@ class VerifyingNumberPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  FutureOr<dynamic> _onVerifyPhoneComplete(value) async {
+    if (value) {
+      Get.dialog(CustomProgressIndicator());
+      await CustomerAPI.createCustomerSession(
+              variableController.phoneController.text)
+          .then((value) {
+        Get.back();
+        if (value) {
+          Get.to(() => AccountCreateSuccess());
+        }
+      });
+    } else {
+      Get.snackbar("แจ้งเตือน", "OTP ไม่ถูกต้อง");
+    }
   }
 }

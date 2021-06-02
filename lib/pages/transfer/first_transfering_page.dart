@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
-import 'package:ganbanking/pages/qr_scan_page.dart';
-import 'package:ganbanking/pages/second_transfering_page.dart';
+import 'package:ganbanking/pages/transfer/qr_scan_page.dart';
+import 'package:ganbanking/pages/transfer/second_transfering_page.dart';
 import 'package:get/get.dart';
 
 class FirstTransferingPage extends StatelessWidget {
@@ -72,7 +72,7 @@ class FirstTransferingPage extends StatelessWidget {
   _buildMenuButton(String text, String icon, dynamic page) {
     return InkWell(
       onTap: () {
-        Get.to(page);
+        Get.to(() => page);
       },
       child: Column(
         children: [

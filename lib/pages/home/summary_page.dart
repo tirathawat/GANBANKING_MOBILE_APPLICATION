@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class SummaryPage extends StatelessWidget {
+  final AccountAPI accountAPI = Get.find<AccountAPI>();
+
   hexColor(String colorhexcode) {
     String colornew = '0xff' + colorhexcode;
     colornew = colornew.replaceAll('#', '');
@@ -33,12 +38,16 @@ class SummaryPage extends StatelessWidget {
               SizedBox(
                 height: 5,
               ),
-              Text(
-                "7,425",
-                style: TextStyle(
-                  fontSize: getScreenWidth(35),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black.withOpacity(.8),
+              Obx(
+                () => Text(
+                  accountAPI.accounts.value == null
+                      ? '0.00'
+                      : '${NumberFormat.currency().format(accountAPI.accounts.value[accountAPI.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
+                  style: TextStyle(
+                    fontSize: getScreenWidth(35),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black.withOpacity(.8),
+                  ),
                 ),
               ),
               SizedBox(
