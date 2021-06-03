@@ -140,19 +140,25 @@ class HomePage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  _buildIncomeComponent(
-                    "รายจ่าย",
-                    "1,460",
-                    Color(0xFFFF5141),
-                  ),
+                  Obx(() => _buildIncomeComponent(
+                        "รายจ่าย",
+                        accountAPI.transactions.value == null
+                            ? 0
+                            : accountAPI
+                                .transactions.value.incomeOutcome[0].outcomeAll,
+                        Color(0xFFFF5141),
+                      )),
                   SizedBox(
                     width: 80,
                   ),
-                  _buildIncomeComponent(
-                    "รายรับ",
-                    "2,730",
-                    Color(0xFF44EF44),
-                  ),
+                  Obx(() => _buildIncomeComponent(
+                        "รายรับ",
+                        accountAPI.transactions.value == null
+                            ? 0
+                            : accountAPI
+                                .transactions.value.incomeOutcome[0].incomeAll,
+                        Color(0xFF44EF44),
+                      )),
                 ],
               ),
             ),
@@ -241,7 +247,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  _buildIncomeComponent(String title, String amount, Color color) {
+  _buildIncomeComponent(String title, double amount, Color color) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -270,7 +276,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Text(
-              amount,
+              NumberFormat.currency().format(amount).replaceAll("USD", ""),
               style: TextStyle(
                 fontSize: getScreenWidth(25),
                 color: Color(hexColor('#1C1939')),

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:ganbanking/constants/constants.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -54,7 +57,7 @@ class SummaryPage extends StatelessWidget {
                 height: 20,
               ),
               Text(
-                "ข้อมูล ณ วันที่ 23 เม.ย 64",
+                "ข้อมูล ณ วันที่ ${DateTime.now().day} ${Constants.SHORT_MONTH_TH[DateTime.now().month - 1]} ${DateTime.now().year + 543}",
                 style: TextStyle(
                   fontSize: getScreenWidth(15),
                   color: Color(0xFF1C1939).withOpacity(.8),
@@ -63,17 +66,32 @@ class SummaryPage extends StatelessWidget {
               SizedBox(
                 height: 25,
               ),
-              CircularPercentIndicator(
-                radius: 180.0,
-                lineWidth: 5.0,
-                percent: .8,
-                center: Text(
-                  "80%",
-                  style: TextStyle(
-                    fontSize: getScreenWidth(30),
-                  ),
-                ),
-                progressColor: Colors.green,
+              Obx(
+                () {
+                  double income, outcome;
+                  if (accountAPI.transactions.value == null) {
+                    income = 0;
+                    outcome = 0;
+                  }
+                  income = accountAPI
+                      .transactions.value.incomeOutcome[0].incomeCurrentMonth;
+                  outcome = accountAPI
+                      .transactions.value.incomeOutcome[0].outcomeCurrentMonth;
+                  return CircularPercentIndicator(
+                    radius: 180.0,
+                    lineWidth: 5.0,
+                    percent: _calculatePercent(income, outcome),
+                    center: Text(
+                      income > outcome
+                          ? "รายรับต่อรายจ่าย"
+                          : "รายจ่ายต่อรายรับ",
+                      style: TextStyle(
+                        fontSize: getScreenWidth(20),
+                      ),
+                    ),
+                    progressColor: income > outcome ? Colors.green : Colors.red,
+                  );
+                },
               ),
               SizedBox(
                 height: 30,
@@ -100,28 +118,35 @@ class SummaryPage extends StatelessWidget {
                       height: 13,
                     ),
                     Text(
-                      'สรุปรายการย้อนหลัง ม.ค. 64 - เม.ย. 64',
+                      'สรุปรายการย้อนหลัง ${Constants.SHORT_MONTH_TH[DateTime.now().month - 1]} ${DateTime.now().year + 543} - ${Constants.SHORT_MONTH_TH[DateTime.now().month]} ${DateTime.now().year + 543}',
                       style: TextStyle(
                         fontSize: getScreenWidth(14),
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1C1939).withOpacity(.8),
                       ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
-                        _buildIncomeComponent(
-                          "รายจ่าย",
-                          "1,460",
-                          Color(0xFFFF5141),
-                        ),
-                        SizedBox(
-                          width: 80,
-                        ),
-                        _buildIncomeComponent(
-                          "รายรับ",
-                          "2,730",
-                          Color(0xFF44EF44),
-                        ),
+                        Obx(() => _buildIncomeComponent(
+                              "รายจ่าย",
+                              accountAPI.transactions.value == null
+                                  ? 0
+                                  : accountAPI.transactions.value
+                                      .incomeOutcome[0].outcomeCurrentMonth,
+                              Color(0xFFFF5141),
+                            )),
+                        Spacer(),
+                        Obx(() => _buildIncomeComponent(
+                              "รายรับ",
+                              accountAPI.transactions.value == null
+                                  ? 0
+                                  : accountAPI.transactions.value
+                                      .incomeOutcome[0].incomeCurrentMonth,
+                              Color(0xFF44EF44),
+                            )),
                       ],
                     ),
                     SizedBox(
@@ -165,7 +190,7 @@ class SummaryPage extends StatelessWidget {
     );
   }
 
-  _buildIncomeComponent(String title, String amount, Color color) {
+  _buildIncomeComponent(String title, double amount, Color color) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -194,7 +219,7 @@ class SummaryPage extends StatelessWidget {
               ),
             ),
             Text(
-              amount,
+              NumberFormat.currency().format(amount).replaceAll("USD", ""),
               style: TextStyle(
                 fontSize: getScreenWidth(25),
                 color: Color(hexColor('#1C1939')),
@@ -209,12 +234,17 @@ class SummaryPage extends StatelessWidget {
   _buildTransactionList() {
     return Expanded(
       child: ListView(
-        children: List.generate(10, (index) => _buildTransactionItem()),
+        children: List.generate(
+            accountAPI.transactions.value.transaction.length, (index) {
+          var data = accountAPI.transactions.value.transaction[index];
+          return _buildTransactionItem(data.transactionTypeName,
+              data.transactionAmount, data.transactionTimestamp);
+        }),
       ),
     );
   }
 
-  Container _buildTransactionItem() {
+  Container _buildTransactionItem(String type, double amount, DateTime date) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       padding: EdgeInsets.only(bottom: 30, top: 16),
@@ -227,10 +257,26 @@ class SummaryPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SvgPicture.asset(
-            Assets.WALLET,
-            color: Color(0xFF003DFF),
-          ),
+          type == "โอน"
+              ? SizedBox(
+                  width: 20,
+                  child: Center(
+                    child: Transform.rotate(
+                      angle: 7 * pi / 4,
+                      child: SvgPicture.asset(
+                        Assets.SEND,
+                        color: Color(0xFF003DFF),
+                      ),
+                    ),
+                  ),
+                )
+              : SizedBox(
+                  width: 20,
+                  child: SvgPicture.asset(
+                    Assets.WALLET,
+                    color: Color(0xFF003DFF),
+                  ),
+                ),
           SizedBox(
             width: 35,
           ),
@@ -238,7 +284,7 @@ class SummaryPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "รับเงิน",
+                type,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: getScreenWidth(16),
@@ -246,7 +292,7 @@ class SummaryPage extends StatelessWidget {
                 ),
               ),
               Text(
-                "4 transactions",
+                "${date.day} ${Constants.SHORT_MONTH_TH[date.month - 1]} ${date.year + 543}",
                 style: TextStyle(
                   fontSize: getScreenWidth(15),
                   color: Color(0xFF1C1939).withOpacity(.8),
@@ -256,7 +302,7 @@ class SummaryPage extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            "200",
+            NumberFormat.currency().format(amount).replaceAll("USD", ""),
             style: TextStyle(
               fontSize: getScreenWidth(18),
               color: Color(0xFF1C1939),
@@ -265,5 +311,13 @@ class SummaryPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _calculatePercent(double income, double outcome) {
+    if (income > outcome) {
+      return income / (income + outcome);
+    } else {
+      return outcome / (income + outcome);
+    }
   }
 }
