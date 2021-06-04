@@ -1,15 +1,42 @@
+import 'package:direct_select/direct_select.dart';
 import 'package:flutter/material.dart';
+import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/pages/transfer/receipt_page.dart';
 import 'package:ganbanking/widgets/default_button.dart';
+import 'package:ganbanking/widgets/selection_item.dart';
 import 'package:get/get.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SecondTransferingPage extends StatelessWidget {
+  final AccountAPI accountAPI = Get.find<AccountAPI>();
+  final elements1 = [
+    "Breakfast",
+    "Lunch",
+    "2nd Snack",
+    "Dinner",
+    "3rd Snack",
+  ];
+  final RxInt selectedIndex1 = 0.obs;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
-      body: _buildContent(),
+      body: DirectSelect(
+          itemExtent: 35.0,
+          selectedIndex: selectedIndex1.value,
+          backgroundColor: Colors.red,
+          child: SelectionItem(
+            isForList: false,
+            title: elements1[selectedIndex1.value],
+          ),
+          onSelectedItemChanged: (index) {
+            selectedIndex1.value = index;
+          },
+          items: _buildItems1()),
     );
   }
 
@@ -63,17 +90,25 @@ class SecondTransferingPage extends StatelessWidget {
                         Text(
                           "บัญชีออมทรัพย์",
                           style: TextStyle(
-                            fontSize: getScreenWidth(16),
+                            fontSize: getScreenWidth(18),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Text(
-                          "บัญชีออมทรัพย์",
-                          style: TextStyle(
-                            fontSize: getScreenWidth(13),
+                        Obx(
+                          () => Text(
+                            accountAPI.accounts.value == null
+                                ? ""
+                                : Util.formatAccountNo(accountAPI
+                                    .accounts
+                                    .value[accountAPI.selectedAccount.value]
+                                    .accountNo
+                                    .toString()),
+                            style: TextStyle(
+                              fontSize: getScreenWidth(16),
+                            ),
                           ),
                         ),
                       ],
@@ -84,7 +119,7 @@ class SecondTransferingPage extends StatelessWidget {
                         Text(
                           "ยอดเงิน",
                           style: TextStyle(
-                            fontSize: getScreenWidth(16),
+                            fontSize: getScreenWidth(18),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -94,7 +129,7 @@ class SecondTransferingPage extends StatelessWidget {
                         Text(
                           "295,900 บาท",
                           style: TextStyle(
-                            fontSize: getScreenWidth(13),
+                            fontSize: getScreenWidth(16),
                           ),
                         ),
                       ],
@@ -112,78 +147,83 @@ class SecondTransferingPage extends StatelessWidget {
     );
   }
 
+  List<Widget> _buildItems1() {
+    return elements1
+        .map((val) => SelectionItem(
+              title: val,
+            ))
+        .toList();
+  }
+
   _buildContent() {
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: getScreenWidth(35),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 25,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: getScreenWidth(35),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 25,
+          ),
+          Text(
+            'ไปยัง',
+            style: TextStyle(
+              fontSize: getScreenWidth(20),
+              fontWeight: FontWeight.bold,
+              color: Color(0xff000000),
             ),
-            Text(
-              'ไปยัง',
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          _buildBankSelector(),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            'เลขที่บัญชี',
+            style: TextStyle(
+              fontSize: getScreenWidth(16),
+              color: Color(0xff000000),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          _buildAccountNoForm(),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            'จำนวน',
+            style: TextStyle(
+              color: Color(0xff000000),
+              fontSize: getScreenWidth(16),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          _buildAmountForm(),
+          Spacer(),
+          Defaultbutton(
+            onPress: () {
+              Get.to(() => ReceiptPage());
+            },
+            text: Text(
+              'ตรวจสอบความถูกต้อง',
               style: TextStyle(
                 fontSize: getScreenWidth(20),
-                fontWeight: FontWeight.bold,
-                color: Color(0xff000000),
+                color: Color(0xffFFFFFF),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            _buildBankSelector(),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'เลขที่บัญชี',
-              style: TextStyle(
-                fontSize: getScreenWidth(16),
-                color: Color(0xff000000),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            _buildAccountNoForm(),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'จำนวน',
-              style: TextStyle(
-                color: Color(0xff000000),
-                fontSize: getScreenWidth(16),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            _buildAmountForm(),
-            Spacer(),
-            Defaultbutton(
-              onPress: () {
-                Get.to(() => ReceiptPage());
-              },
-              text: Text(
-                'โอนเงิน',
-                style: TextStyle(
-                  fontSize: getScreenWidth(20),
-                  color: Color(0xffFFFFFF),
-                ),
-              ),
-              color: Color(0xff1C75FF),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-          ],
-        ),
+            color: Color(0xff1C75FF),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
       ),
     );
   }
@@ -191,25 +231,19 @@ class SecondTransferingPage extends StatelessWidget {
   TextFormField _buildAmountForm() {
     return TextFormField(
       style: TextStyle(
-        fontSize: getScreenWidth(14),
+        fontSize: getScreenWidth(18),
         color: Colors.black,
-        fontWeight: FontWeight.bold,
       ),
       keyboardType: TextInputType.number,
+      cursorColor: Colors.black,
       decoration: InputDecoration(
-        fillColor: Color(0xFF47AEFC).withOpacity(.2),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        fillColor: Color(0xFFF7F7F7),
         filled: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: Color(0xFF003DFF),
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: Color(0xFF003DFF),
-          ),
         ),
       ),
     );
@@ -217,11 +251,15 @@ class SecondTransferingPage extends StatelessWidget {
 
   TextFormField _buildAccountNoForm() {
     return TextFormField(
+      inputFormatters: [
+        MaskTextInputFormatter(
+            mask: '###-#-####-#', filter: {"#": RegExp(r'[0-9]')})
+      ],
       style: TextStyle(
-        fontSize: getScreenWidth(14),
+        fontSize: getScreenWidth(18),
         color: Colors.black,
-        fontWeight: FontWeight.bold,
       ),
+      cursorColor: Colors.black,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(
@@ -231,7 +269,6 @@ class SecondTransferingPage extends StatelessWidget {
         filled: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
         ),
       ),
     );

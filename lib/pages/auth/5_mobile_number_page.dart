@@ -8,7 +8,8 @@ import 'package:get/get.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class MobileNumberPage extends StatelessWidget {
-  final VariableController variableController = Get.find<VariableController>();
+  final VariableController variableController = Get.put(VariableController());
+
   final RxBool _validated = false.obs;
   @override
   Widget build(BuildContext context) {

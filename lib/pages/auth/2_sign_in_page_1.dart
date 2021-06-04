@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/controllers/variable_controller.dart';
 import 'package:ganbanking/pages/auth/3_sign_in_page_2.dart';
 import 'package:get/get.dart';
 
 import '5_mobile_number_page.dart';
 
 class SignInPage1 extends StatelessWidget {
+  final VariableController variableController = Get.put(VariableController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(

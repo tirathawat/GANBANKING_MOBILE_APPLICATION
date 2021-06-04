@@ -132,15 +132,19 @@ class SetPasswordPage extends StatelessWidget {
   }
 
   void _onPressButton() async {
-    Get.dialog(CustomProgressIndicator());
-    await CustomerAPI.createCustomerKey(
-            variableController.phoneController.text, passwordController.text)
-        .then((value) {
-      Get.back();
-      if (value)
-        Get.offAll(() => HomePage());
-      else
-        Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
-    });
+    if (passwordController.text.length != 6) {
+      Get.snackbar("แจ้งเตือน", "กรุณากรอกรหัสผ่านจำนวน 6 หลัก");
+    } else {
+      Get.dialog(CustomProgressIndicator());
+      await CustomerAPI.createCustomerKey(
+              variableController.phoneController.text, passwordController.text)
+          .then((value) {
+        Get.back();
+        if (value)
+          Get.offAll(() => HomePage());
+        else
+          Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
+      });
+    }
   }
 }

@@ -6,6 +6,40 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:http/http.dart' as http;
 
 class CustomerAPI extends GetxController {
+  static Future<bool> hasCustomerSession() async {
+    return await http
+        .post(
+      Uri.parse("${API.BASE_URL}/mobile/customer/hassession"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "customer_phone_number": FirebaseAuth.instance.currentUser.phoneNumber
+              .replaceAll("+66", "0"),
+          "token": FirebaseAuth.instance.currentUser.uid,
+        },
+      ),
+    )
+        .then((value) {
+      if (value.body.contains("true"))
+        return true;
+      else
+        return false;
+    });
+  }
+
+  static Future<void> signOut() async {
+    return await http.post(
+      Uri.parse("${API.BASE_URL}/mobile/customer/signout"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "customer_phone_number": FirebaseAuth.instance.currentUser.phoneNumber
+              .replaceAll("+66", "0")
+        },
+      ),
+    );
+  }
+
   static Future<bool> hasCustomer(String phone) async {
     return await http
         .post(
@@ -27,7 +61,8 @@ class CustomerAPI extends GetxController {
     });
   }
 
-  static Future<bool> createCustomerSession(String phoneNumber) async {
+  static Future<bool> createCustomerSession(
+      String phoneNumber, String password) async {
     return await http
         .post(
       Uri.parse("${API.BASE_URL}/mobile/customer/createsession"),
@@ -36,6 +71,7 @@ class CustomerAPI extends GetxController {
         {
           "phoneNumber": phoneNumber,
           "token": FirebaseAuth.instance.currentUser.uid,
+          "passcode": password,
         },
       ),
     )

@@ -50,17 +50,17 @@ class FirstTransferingPage extends StatelessWidget {
               _buildMenuButton(
                 "G Bank",
                 Assets.PEOPLE,
-                SecondTransferingPage(),
+                () => SecondTransferingPage(),
               ),
               _buildMenuButton(
                 "ต่างธนาคาร",
                 Assets.BANK,
-                SecondTransferingPage(),
+                () => SecondTransferingPage(),
               ),
               _buildMenuButton(
                 "Scan QR",
                 Assets.QRCODE,
-                QRScanPage(),
+                () => QRScanPage(),
               ),
             ],
           ),
@@ -69,10 +69,10 @@ class FirstTransferingPage extends StatelessWidget {
     );
   }
 
-  _buildMenuButton(String text, String icon, dynamic page) {
+  _buildMenuButton(String text, String icon, Function page) {
     return InkWell(
       onTap: () {
-        Get.to(() => page);
+        Get.to(page);
       },
       child: Column(
         children: [

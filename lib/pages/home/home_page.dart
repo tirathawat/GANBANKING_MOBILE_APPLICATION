@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/apis/account_api.dart';
+import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:ganbanking/controllers/session_controller.dart';
 
 import 'package:ganbanking/pages/auth/2_sign_in_page_1.dart';
 import 'package:ganbanking/pages/home/summary_page.dart';
@@ -148,9 +150,7 @@ class HomePage extends StatelessWidget {
                                 .transactions.value.incomeOutcome[0].outcomeAll,
                         Color(0xFFFF5141),
                       )),
-                  SizedBox(
-                    width: 80,
-                  ),
+                  Spacer(),
                   Obx(() => _buildIncomeComponent(
                         "รายรับ",
                         accountAPI.transactions.value == null
@@ -173,6 +173,7 @@ class HomePage extends StatelessWidget {
 
   void _onSignOut() async {
     Get.dialog(CustomProgressIndicator());
+    CustomerAPI.signOut();
     await FirebaseAuth.instance.signOut().then((value) {
       Get.back();
       Get.offAll(() => SignInPage1());
@@ -208,7 +209,7 @@ class HomePage extends StatelessWidget {
                   _buildMenuBox(
                     "โอนเงิน",
                     SvgPicture.asset(Assets.WALLET),
-                    FirstTransferingPage(),
+                    () => FirstTransferingPage(),
                   ),
                   _buildMenuBox(
                     "My QRcode",
@@ -216,12 +217,12 @@ class HomePage extends StatelessWidget {
                       Assets.QRCODE,
                       color: Colors.white,
                     ),
-                    MyQrCodePage(),
+                    () => MyQrCodePage(),
                   ),
                   _buildMenuBox(
                     "สรุปรายการ",
                     SvgPicture.asset(Assets.STAT),
-                    SummaryPage(),
+                    () => SummaryPage(),
                   ),
                 ],
               ),

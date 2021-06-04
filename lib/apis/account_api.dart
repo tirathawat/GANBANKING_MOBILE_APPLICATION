@@ -4,8 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ganbanking/constants/api.dart';
 import 'package:ganbanking/models/account_model.dart';
 import 'package:ganbanking/models/transaction_model.dart';
+import 'package:ganbanking/pages/fill_password_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
+import 'customer_api.dart';
 
 class AccountAPI extends GetxController {
   Rxn<List<AccountModel>> accounts = Rxn<List<AccountModel>>();
@@ -14,8 +17,18 @@ class AccountAPI extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await getAccountList();
-    await getTransaction();
+    await CustomerAPI.hasCustomerSession().then((value) async {
+      print(value);
+      if (!value) {
+        Get.to(FillPasswordPage()).then((value) async {
+          await getAccountList();
+          await getTransaction();
+        });
+      } else {
+        await getAccountList();
+        await getTransaction();
+      }
+    });
   }
 
   Future<void> getTransaction() async {

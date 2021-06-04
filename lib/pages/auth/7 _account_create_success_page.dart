@@ -105,10 +105,11 @@ class AccountCreateSuccess extends StatelessWidget {
     await CustomerAPI.hasCustomerKey(
             variableController.phoneController.text.replaceAll("+66", "0"))
         .then((value) {
-      if (value)
+      if (!value)
         Get.to(() => SetPasswordPage());
-      else
+      else {
         Get.to(() => HomePage());
+      }
     });
   }
 }
