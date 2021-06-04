@@ -4,6 +4,7 @@ import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/controllers/transfer_controller.dart';
 import 'package:ganbanking/pages/transfer/comfirm_transfering_page.dart';
 import 'package:ganbanking/pages/transfer/selection_bank_page.dart';
@@ -16,8 +17,9 @@ class SecondTransferingPage extends StatelessWidget {
   final AccountAPI accountAPI = Get.find<AccountAPI>();
   final BankAPI bankAPI = Get.find<BankAPI>();
   final TransferController transferController = Get.put(TransferController());
-  RxString inputValue = ''.obs;
-  RxString unmaskedInputValue = ''.obs;
+  final AppController appController = Get.find<AppController>();
+  final RxString inputValue = ''.obs;
+  final RxString unmaskedInputValue = ''.obs;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,11 +88,11 @@ class SecondTransferingPage extends StatelessWidget {
                         ),
                         Obx(
                           () => Text(
-                            accountAPI.accounts.value == null
+                            appController.accounts.value == null
                                 ? ""
-                                : Util.formatAccountNo(accountAPI
+                                : Util.formatAccountNo(appController
                                     .accounts
-                                    .value[accountAPI.selectedAccount.value]
+                                    .value[appController.selectedAccount.value]
                                     .accountNo
                                     .toString()),
                             style: TextStyle(

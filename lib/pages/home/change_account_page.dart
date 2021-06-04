@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'home_page.dart';
 
 class ChangeAccountPage extends StatelessWidget {
+  final AppController appController = Get.find<AppController>();
   final AccountAPI accountAPI = Get.find<AccountAPI>();
   @override
   Widget build(BuildContext context) {
@@ -18,11 +20,11 @@ class ChangeAccountPage extends StatelessWidget {
       appBar: _buildAppBar(),
       body: ListView(
           children: List.generate(
-              accountAPI.accounts.value.length,
+              appController.accounts.value.length,
               (index) => _buildAccountItem(
                   index,
-                  accountAPI.accounts.value[index].accountNo,
-                  accountAPI.accounts.value[index].accountBalance))),
+                  appController.accounts.value[index].accountNo,
+                  appController.accounts.value[index].accountBalance))),
     );
   }
 
@@ -47,7 +49,7 @@ class ChangeAccountPage extends StatelessWidget {
   _buildAccountItem(int index, int accountNo, double balance) {
     return GestureDetector(
       onTap: () async {
-        accountAPI.selectedAccount.value = index;
+        appController.selectedAccount.value = index;
         Get.dialog(CustomProgressIndicator());
         await accountAPI.getTransaction().then((value) {
           Get.off(() => HomePage());

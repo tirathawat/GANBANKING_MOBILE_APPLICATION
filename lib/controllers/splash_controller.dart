@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/pages/auth/2_sign_in_page_1.dart';
 import 'package:ganbanking/pages/fill_password_page.dart';

@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
-import 'package:ganbanking/pages/home/home_page.dart';
 import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';

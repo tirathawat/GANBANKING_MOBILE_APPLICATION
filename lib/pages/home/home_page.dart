@@ -8,6 +8,7 @@ import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 
 import 'package:ganbanking/pages/auth/2_sign_in_page_1.dart';
 import 'package:ganbanking/pages/home/summary_page.dart';
@@ -22,6 +23,7 @@ import 'my_qrcode_page.dart';
 class HomePage extends StatelessWidget {
   final AccountAPI accountAPI = Get.put(AccountAPI());
   final BankAPI bankAPI = Get.put(BankAPI());
+  final AppController appController = Get.find<AppController>();
   HomePage({Key key}) : super(key: key);
   hexColor(String colorhexcode) {
     String colornew = '0xff' + colorhexcode;
@@ -80,9 +82,9 @@ class HomePage extends StatelessWidget {
                 text: TextSpan(
                   children: <TextSpan>[
                     TextSpan(
-                        text: accountAPI.accounts.value == null
+                        text: appController.accounts.value == null
                             ? '0.00'
-                            : '${NumberFormat.currency().format(accountAPI.accounts.value[accountAPI.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
+                            : '${NumberFormat.currency().format(appController.accounts.value[appController.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
                         style: TextStyle(
                           fontSize: getScreenWidth(35),
                           color: Color(hexColor('#FFFFFF')),
@@ -105,9 +107,9 @@ class HomePage extends StatelessWidget {
               children: [
                 Obx(
                   () => Text(
-                    accountAPI.accounts.value == null
+                    appController.accounts.value == null
                         ? 'บัญชีออมทรัพย์ '
-                        : "บัญชีออมทรัพย์ ${Util.formatAccountNo(accountAPI.accounts.value[accountAPI.selectedAccount.value].accountNo.toString())}",
+                        : "บัญชีออมทรัพย์ ${Util.formatAccountNo(appController.accounts.value[appController.selectedAccount.value].accountNo.toString())}",
                     style: TextStyle(
                       fontSize: getScreenWidth(15),
                       color: Colors.white.withOpacity(.8),
@@ -144,18 +146,18 @@ class HomePage extends StatelessWidget {
                 children: [
                   Obx(() => _buildIncomeComponent(
                         "รายจ่าย",
-                        accountAPI.transactions.value == null
+                        appController.transactions.value == null
                             ? 0
-                            : accountAPI
+                            : appController
                                 .transactions.value.incomeOutcome[0].outcomeAll,
                         Color(0xFFFF5141),
                       )),
                   Spacer(),
                   Obx(() => _buildIncomeComponent(
                         "รายรับ",
-                        accountAPI.transactions.value == null
+                        appController.transactions.value == null
                             ? 0
-                            : accountAPI
+                            : appController
                                 .transactions.value.incomeOutcome[0].incomeAll,
                         Color(0xFF44EF44),
                       )),

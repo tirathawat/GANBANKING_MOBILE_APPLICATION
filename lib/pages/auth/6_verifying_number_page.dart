@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/controllers/variable_controller.dart';
 import 'package:ganbanking/services/firebase_service.dart';
-import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '7 _account_create_success_page.dart';

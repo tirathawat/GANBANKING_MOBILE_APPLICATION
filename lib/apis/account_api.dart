@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ganbanking/constants/api.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/models/account_info_model.dart';
 import 'package:ganbanking/models/account_model.dart';
 import 'package:ganbanking/models/transaction_model.dart';
@@ -12,10 +13,7 @@ import 'package:http/http.dart' as http;
 import 'customer_api.dart';
 
 class AccountAPI extends GetxController {
-  Rxn<List<AccountModel>> accounts = Rxn<List<AccountModel>>();
-  Rxn<TransactionModel> transactions = Rxn<TransactionModel>();
-  Rxn<AccountInfoModel> accountInfo = Rxn<AccountInfoModel>();
-  RxInt selectedAccount = 0.obs;
+  AppController appController = Get.find<AppController>();
   @override
   void onInit() async {
     super.onInit();
@@ -42,7 +40,8 @@ class AccountAPI extends GetxController {
       headers: {"Content-type": "application/json"},
       body: jsonEncode(
         {
-          "accountNoFrom": accounts.value[selectedAccount.value].accountNo,
+          "accountNoFrom": appController
+              .accounts.value[appController.selectedAccount.value].accountNo,
           "accountNoTo": accoutNoTo,
           "amount": amount,
           "phone": FirebaseAuth.instance.currentUser.phoneNumber
@@ -79,7 +78,7 @@ class AccountAPI extends GetxController {
     )
         .then(
       (value) {
-        accountInfo.value =
+        appController.accountInfo.value =
             accountInfoModelFromJson(utf8.decode(value.bodyBytes));
         return value.statusCode == 200;
       },
@@ -93,14 +92,15 @@ class AccountAPI extends GetxController {
       headers: {"Content-type": "application/json"},
       body: jsonEncode(
         {
-          "account_no":
-              accounts.value[selectedAccount.value].accountNo.toString()
+          "account_no": appController
+              .accounts.value[appController.selectedAccount.value].accountNo
+              .toString()
         },
       ),
     )
         .then(
       (value) {
-        transactions.value =
+        appController.transactions.value =
             transactionModelFromJson(utf8.decode(value.bodyBytes));
       },
     );
@@ -123,7 +123,8 @@ class AccountAPI extends GetxController {
       (value) {
         print("value in getAccountList");
         print(value.body);
-        accounts.value = accountModelFromJson(utf8.decode(value.bodyBytes));
+        appController.accounts.value =
+            accountModelFromJson(utf8.decode(value.bodyBytes));
       },
     );
   }

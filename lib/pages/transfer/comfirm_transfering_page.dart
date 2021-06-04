@@ -3,6 +3,7 @@ import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/controllers/transfer_controller.dart';
 import 'package:ganbanking/pages/transfer/receipt_page.dart';
 import 'package:ganbanking/widgets/custom_progress_indicator.dart';
@@ -14,6 +15,7 @@ class ConfirmTransferingPage extends StatelessWidget {
   final AccountAPI accountAPI = Get.find<AccountAPI>();
   final TransferController transferController = Get.find<TransferController>();
   final BankAPI bankAPI = Get.find<BankAPI>();
+  final AppController appController = Get.find<AppController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +28,10 @@ class ConfirmTransferingPage extends StatelessWidget {
           _buildTransfer(
               "จาก",
               "G",
-              accountAPI
-                  .accounts.value[accountAPI.selectedAccount.value].accountName,
-              accountAPI
-                  .accounts.value[accountAPI.selectedAccount.value].accountNo
+              appController.accounts.value[appController.selectedAccount.value]
+                  .accountName,
+              appController
+                  .accounts.value[appController.selectedAccount.value].accountNo
                   .toString(),
               "003DFF"),
           Divider(
@@ -37,10 +39,10 @@ class ConfirmTransferingPage extends StatelessWidget {
           ),
           _buildTransfer(
             "ไปยัง",
-            accountAPI.accountInfo.value.bankLogo,
-            accountAPI.accountInfo.value.accountName,
-            accountAPI.accountInfo.value.accountNo.toString(),
-            accountAPI.accountInfo.value.bankColor,
+            appController.accountInfo.value.bankLogo,
+            appController.accountInfo.value.accountName,
+            appController.accountInfo.value.accountNo.toString(),
+            appController.accountInfo.value.bankColor,
           ),
           Divider(
             height: 30,

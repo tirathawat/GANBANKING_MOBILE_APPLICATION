@@ -7,13 +7,14 @@ import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/constants/assets.dart';
 import 'package:ganbanking/constants/constants.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class SummaryPage extends StatelessWidget {
   final AccountAPI accountAPI = Get.find<AccountAPI>();
-
+  final AppController appController = Get.find<AppController>();
   hexColor(String colorhexcode) {
     String colornew = '0xff' + colorhexcode;
     colornew = colornew.replaceAll('#', '');
@@ -43,9 +44,9 @@ class SummaryPage extends StatelessWidget {
               ),
               Obx(
                 () => Text(
-                  accountAPI.accounts.value == null
+                  appController.accounts.value == null
                       ? '0.00'
-                      : '${NumberFormat.currency().format(accountAPI.accounts.value[accountAPI.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
+                      : '${NumberFormat.currency().format(appController.accounts.value[appController.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
                   style: TextStyle(
                     fontSize: getScreenWidth(35),
                     fontWeight: FontWeight.bold,
@@ -69,13 +70,13 @@ class SummaryPage extends StatelessWidget {
               Obx(
                 () {
                   double income, outcome;
-                  if (accountAPI.transactions.value == null) {
+                  if (appController.transactions.value == null) {
                     income = 0;
                     outcome = 0;
                   }
-                  income = accountAPI
+                  income = appController
                       .transactions.value.incomeOutcome[0].incomeCurrentMonth;
-                  outcome = accountAPI
+                  outcome = appController
                       .transactions.value.incomeOutcome[0].outcomeCurrentMonth;
                   return CircularPercentIndicator(
                     radius: 180.0,
@@ -132,18 +133,18 @@ class SummaryPage extends StatelessWidget {
                       children: [
                         Obx(() => _buildIncomeComponent(
                               "รายจ่าย",
-                              accountAPI.transactions.value == null
+                              appController.transactions.value == null
                                   ? 0
-                                  : accountAPI.transactions.value
+                                  : appController.transactions.value
                                       .incomeOutcome[0].outcomeCurrentMonth,
                               Color(0xFFFF5141),
                             )),
                         Spacer(),
                         Obx(() => _buildIncomeComponent(
                               "รายรับ",
-                              accountAPI.transactions.value == null
+                              appController.transactions.value == null
                                   ? 0
-                                  : accountAPI.transactions.value
+                                  : appController.transactions.value
                                       .incomeOutcome[0].incomeCurrentMonth,
                               Color(0xFF44EF44),
                             )),
@@ -235,8 +236,8 @@ class SummaryPage extends StatelessWidget {
     return Expanded(
       child: ListView(
         children: List.generate(
-            accountAPI.transactions.value.transaction.length, (index) {
-          var data = accountAPI.transactions.value.transaction[index];
+            appController.transactions.value.transaction.length, (index) {
+          var data = appController.transactions.value.transaction[index];
           return _buildTransactionItem(data.transactionTypeName,
               data.transactionAmount, data.transactionTimestamp);
         }),

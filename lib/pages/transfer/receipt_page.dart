@@ -6,6 +6,7 @@ import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
 import 'package:ganbanking/constants/constants.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/controllers/transfer_controller.dart';
 import 'package:ganbanking/pages/home/home_page.dart';
 import 'package:ganbanking/widgets/default_button.dart';
@@ -16,6 +17,7 @@ class ReceiptPage extends StatelessWidget {
   final String ref;
   final TransferController transferController = Get.find<TransferController>();
   final AccountAPI accountAPI = Get.find<AccountAPI>();
+  final AppController appController = Get.find<AppController>();
   ReceiptPage({Key key, @required this.ref}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -158,9 +160,9 @@ class ReceiptPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        accountAPI
+                        appController
                             .accounts
-                            .value[accountAPI.selectedAccount.value]
+                            .value[appController.selectedAccount.value]
                             .accountName,
                         style: TextStyle(
                           color: Color(0xff1C1939),
@@ -168,8 +170,10 @@ class ReceiptPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        Util.formatAccountNo(accountAPI.accounts
-                            .value[accountAPI.selectedAccount.value].accountNo
+                        Util.formatAccountNo(appController
+                            .accounts
+                            .value[appController.selectedAccount.value]
+                            .accountNo
                             .toString()),
                         style: TextStyle(
                           color: Color(0xff1C1939),
@@ -198,15 +202,16 @@ class ReceiptPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        accountAPI.accountInfo.value.accountName,
+                        appController.accountInfo.value.accountName,
                         style: TextStyle(
                           color: Color(0xff1C1939),
                           fontSize: getScreenWidth(20),
                         ),
                       ),
                       Text(
-                        Util.formatAccountNo(
-                            accountAPI.accountInfo.value.accountNo.toString()),
+                        Util.formatAccountNo(appController
+                            .accountInfo.value.accountNo
+                            .toString()),
                         style: TextStyle(
                           color: Color(0xff1C1939),
                           fontSize: getScreenWidth(13),
