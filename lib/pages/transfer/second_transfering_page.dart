@@ -1,42 +1,29 @@
-import 'package:direct_select/direct_select.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ganbanking/apis/account_api.dart';
+import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
-import 'package:ganbanking/pages/transfer/receipt_page.dart';
+import 'package:ganbanking/controllers/transfer_controller.dart';
+import 'package:ganbanking/pages/transfer/comfirm_transfering_page.dart';
+import 'package:ganbanking/pages/transfer/selection_bank_page.dart';
+import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:ganbanking/widgets/default_button.dart';
-import 'package:ganbanking/widgets/selection_item.dart';
 import 'package:get/get.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:text_input_mask_formatter/text_input_mask_formatter.dart';
 
 class SecondTransferingPage extends StatelessWidget {
   final AccountAPI accountAPI = Get.find<AccountAPI>();
-  final elements1 = [
-    "Breakfast",
-    "Lunch",
-    "2nd Snack",
-    "Dinner",
-    "3rd Snack",
-  ];
-  final RxInt selectedIndex1 = 0.obs;
-
+  final BankAPI bankAPI = Get.find<BankAPI>();
+  final TransferController transferController = Get.put(TransferController());
+  RxString inputValue = ''.obs;
+  RxString unmaskedInputValue = ''.obs;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: _buildAppBar(),
-      body: DirectSelect(
-          itemExtent: 35.0,
-          selectedIndex: selectedIndex1.value,
-          backgroundColor: Colors.red,
-          child: SelectionItem(
-            isForList: false,
-            title: elements1[selectedIndex1.value],
-          ),
-          onSelectedItemChanged: (index) {
-            selectedIndex1.value = index;
-          },
-          items: _buildItems1()),
+      body: _buildContent(),
     );
   }
 
@@ -147,14 +134,6 @@ class SecondTransferingPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildItems1() {
-    return elements1
-        .map((val) => SelectionItem(
-              title: val,
-            ))
-        .toList();
-  }
-
   _buildContent() {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -191,7 +170,7 @@ class SecondTransferingPage extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          _buildAccountNoForm(),
+          _buildAccountNoTo(),
           SizedBox(
             height: 10,
           ),
@@ -206,10 +185,46 @@ class SecondTransferingPage extends StatelessWidget {
             height: 10,
           ),
           _buildAmountForm(),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            'บันทึก',
+            style: TextStyle(
+              color: Color(0xff000000),
+              fontSize: getScreenWidth(16),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          _buildMemoForm(),
           Spacer(),
           Defaultbutton(
-            onPress: () {
-              Get.to(() => ReceiptPage());
+            onPress: () async {
+              if (transferController.accountNoTo.text.length != 12 ||
+                  transferController.amount.text == '') {
+                Get.snackbar("แจ้งเตือน", "เลขบัญชีหรือจำนวนเงินไม่ถูกต้อง");
+              } else {
+                Get.dialog(CustomProgressIndicator());
+                await accountAPI
+                    .getAccountByID(
+                        transferController.accountNoTo.text.replaceAll("-", ""),
+                        bankAPI.bank.value[bankAPI.selectedBank.value].bankId)
+                    .then((value) {
+                  Get.back();
+
+                  if (value) {
+                    Get.to(() => ConfirmTransferingPage());
+                  } else {
+                    Get.snackbar("แจ้งเตือน", "ไม่พบบัญชีปลายทาง");
+                  }
+                }).onError((error, stackTrace) {
+                  Get.back();
+                  print(error.message);
+                  Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
+                });
+              }
             },
             text: Text(
               'ตรวจสอบความถูกต้อง',
@@ -228,14 +243,36 @@ class SecondTransferingPage extends StatelessWidget {
     );
   }
 
+  TextFormField _buildMemoForm() {
+    return TextFormField(
+      style: TextStyle(
+        fontSize: getScreenWidth(18),
+        color: Colors.black,
+      ),
+      maxLines: 3,
+      controller: transferController.memo,
+      keyboardType: TextInputType.text,
+      cursorColor: Colors.black,
+      decoration: InputDecoration(
+        fillColor: Color(0xFFF7F7F7),
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
   TextFormField _buildAmountForm() {
     return TextFormField(
       style: TextStyle(
         fontSize: getScreenWidth(18),
         color: Colors.black,
       ),
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       keyboardType: TextInputType.number,
       cursorColor: Colors.black,
+      controller: transferController.amount,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(
           horizontal: 24,
@@ -249,17 +286,23 @@ class SecondTransferingPage extends StatelessWidget {
     );
   }
 
-  TextFormField _buildAccountNoForm() {
+  TextFormField _buildAccountNoTo() {
     return TextFormField(
       inputFormatters: [
-        MaskTextInputFormatter(
-            mask: '###-#-####-#', filter: {"#": RegExp(r'[0-9]')})
+        MaskTextInputFormatter('___-_-____-_'),
+        LengthLimitingTextInputFormatter(12),
       ],
       style: TextStyle(
         fontSize: getScreenWidth(18),
         color: Colors.black,
       ),
+      onChanged: (s) {
+        inputValue.value = s;
+        unmaskedInputValue.value =
+            MaskTextInputFormatter('___-_-____-_').getEscapedString(s);
+      },
       cursorColor: Colors.black,
+      controller: transferController.accountNoTo,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(
@@ -274,37 +317,44 @@ class SecondTransferingPage extends StatelessWidget {
     );
   }
 
-  Container _buildBankSelector() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 10,
-        horizontal: 24,
-      ),
-      decoration: BoxDecoration(
-        color: Color(0xFF1B72F9).withOpacity(.26),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Text(
-            "G",
-            style: TextStyle(
-              fontSize: getScreenWidth(30),
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF003DFF),
+  _buildBankSelector() {
+    return InkWell(
+      onTap: () {
+        Get.to(() => SelectionBankPage());
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 24,
+        ),
+        decoration: BoxDecoration(
+          color: Color(int.parse(
+                  "0xFF${bankAPI.bank.value[bankAPI.selectedBank.value].bankColor}"))
+              .withOpacity(.26),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Text(
+              bankAPI.bank.value[bankAPI.selectedBank.value].bankLogo,
+              style: TextStyle(
+                fontSize: getScreenWidth(30),
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF003DFF),
+              ),
             ),
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          Text(
-            "G BANK",
-            style: TextStyle(
-              fontSize: getScreenWidth(15),
-              fontWeight: FontWeight.w500,
+            SizedBox(
+              width: 16,
             ),
-          ),
-        ],
+            Text(
+              bankAPI.bank.value[bankAPI.selectedBank.value].bankName,
+              style: TextStyle(
+                fontSize: getScreenWidth(15),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

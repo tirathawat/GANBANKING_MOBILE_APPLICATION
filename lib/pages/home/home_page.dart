@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/apis/account_api.dart';
+import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
-import 'package:ganbanking/controllers/session_controller.dart';
 
 import 'package:ganbanking/pages/auth/2_sign_in_page_1.dart';
 import 'package:ganbanking/pages/home/summary_page.dart';
@@ -21,7 +21,7 @@ import 'my_qrcode_page.dart';
 
 class HomePage extends StatelessWidget {
   final AccountAPI accountAPI = Get.put(AccountAPI());
-
+  final BankAPI bankAPI = Get.put(BankAPI());
   HomePage({Key key}) : super(key: key);
   hexColor(String colorhexcode) {
     String colornew = '0xff' + colorhexcode;

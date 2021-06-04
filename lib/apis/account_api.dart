@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ganbanking/constants/api.dart';
+import 'package:ganbanking/models/account_info_model.dart';
 import 'package:ganbanking/models/account_model.dart';
 import 'package:ganbanking/models/transaction_model.dart';
 import 'package:ganbanking/pages/fill_password_page.dart';
@@ -13,10 +14,12 @@ import 'customer_api.dart';
 class AccountAPI extends GetxController {
   Rxn<List<AccountModel>> accounts = Rxn<List<AccountModel>>();
   Rxn<TransactionModel> transactions = Rxn<TransactionModel>();
+  Rxn<AccountInfoModel> accountInfo = Rxn<AccountInfoModel>();
   RxInt selectedAccount = 0.obs;
   @override
   void onInit() async {
     super.onInit();
+    print(FirebaseAuth.instance.currentUser.uid);
     await CustomerAPI.hasCustomerSession().then((value) async {
       print(value);
       if (!value) {
@@ -29,6 +32,58 @@ class AccountAPI extends GetxController {
         await getTransaction();
       }
     });
+  }
+
+  Future<String> transfer(
+      int accoutNoTo, double amount, int bankID, String memo) async {
+    return await http
+        .post(
+      Uri.parse("${API.BASE_URL}/mobile/account/transfer"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "accountNoFrom": accounts.value[selectedAccount.value].accountNo,
+          "accountNoTo": accoutNoTo,
+          "amount": amount,
+          "phone": FirebaseAuth.instance.currentUser.phoneNumber
+              .replaceAll("+66", "0"),
+          "token": FirebaseAuth.instance.currentUser.uid,
+          "bank_id_to": bankID,
+          "memo": memo,
+        },
+      ),
+    )
+        .then(
+      (value) {
+        if (value.statusCode == 200)
+          return value.body;
+        else {
+          print(value.body);
+          return null;
+        }
+      },
+    );
+  }
+
+  Future<bool> getAccountByID(String accountNo, int bankID) async {
+    return await http
+        .post(
+      Uri.parse("${API.BASE_URL}/mobile/account/info"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "account_no": accountNo,
+          "bank_id": bankID,
+        },
+      ),
+    )
+        .then(
+      (value) {
+        accountInfo.value =
+            accountInfoModelFromJson(utf8.decode(value.bodyBytes));
+        return value.statusCode == 200;
+      },
+    );
   }
 
   Future<void> getTransaction() async {
