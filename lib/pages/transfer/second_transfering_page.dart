@@ -11,6 +11,7 @@ import 'package:ganbanking/pages/transfer/selection_bank_page.dart';
 import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:ganbanking/widgets/default_button.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:text_input_mask_formatter/text_input_mask_formatter.dart';
 
 class SecondTransferingPage extends StatelessWidget {
@@ -103,7 +104,7 @@ class SecondTransferingPage extends StatelessWidget {
                       ],
                     ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           "ยอดเงิน",
@@ -116,7 +117,7 @@ class SecondTransferingPage extends StatelessWidget {
                           height: 10,
                         ),
                         Text(
-                          "295,900 บาท",
+                          "${NumberFormat.currency().format(appController.accounts.value[appController.selectedAccount.value].accountBalance).replaceAll("USD", "")} บาท",
                           style: TextStyle(
                             fontSize: getScreenWidth(16),
                           ),
@@ -212,7 +213,8 @@ class SecondTransferingPage extends StatelessWidget {
                 await accountAPI
                     .getAccountByID(
                         transferController.accountNoTo.text.replaceAll("-", ""),
-                        bankAPI.bank.value[bankAPI.selectedBank.value].bankId)
+                        appController.bank
+                            .value[appController.selectedBank.value].bankId)
                     .then((value) {
                   Get.back();
 
@@ -331,14 +333,15 @@ class SecondTransferingPage extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: Color(int.parse(
-                  "0xFF${bankAPI.bank.value[bankAPI.selectedBank.value].bankColor}"))
+                  "0xFF${appController.bank.value[appController.selectedBank.value].bankColor}"))
               .withOpacity(.26),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
             Text(
-              bankAPI.bank.value[bankAPI.selectedBank.value].bankLogo,
+              appController
+                  .bank.value[appController.selectedBank.value].bankLogo,
               style: TextStyle(
                 fontSize: getScreenWidth(30),
                 fontWeight: FontWeight.bold,
@@ -349,7 +352,8 @@ class SecondTransferingPage extends StatelessWidget {
               width: 16,
             ),
             Text(
-              bankAPI.bank.value[bankAPI.selectedBank.value].bankName,
+              appController
+                  .bank.value[appController.selectedBank.value].bankName,
               style: TextStyle(
                 fontSize: getScreenWidth(15),
                 fontWeight: FontWeight.w500,

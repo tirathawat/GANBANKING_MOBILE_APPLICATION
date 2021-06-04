@@ -15,6 +15,7 @@ class AccountInfoModel {
     this.accountName,
     this.accountNo,
     this.bankColor,
+    this.bankId,
     this.bankLogo,
     this.bankName,
   });
@@ -22,6 +23,7 @@ class AccountInfoModel {
   String accountName;
   int accountNo;
   String bankColor;
+  int bankId;
   String bankLogo;
   String bankName;
 
@@ -30,6 +32,7 @@ class AccountInfoModel {
         accountName: json["account_name"],
         accountNo: json["account_no"],
         bankColor: json["bank_color"],
+        bankId: json["bank_id"],
         bankLogo: json["bank_logo"],
         bankName: json["bank_name"],
       );
@@ -38,6 +41,7 @@ class AccountInfoModel {
         "account_name": accountName,
         "account_no": accountNo,
         "bank_color": bankColor,
+        "bank_id": bankId,
         "bank_logo": bankLogo,
         "bank_name": bankName,
       };

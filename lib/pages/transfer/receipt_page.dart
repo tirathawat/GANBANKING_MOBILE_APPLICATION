@@ -18,9 +18,21 @@ class ReceiptPage extends StatelessWidget {
   final TransferController transferController = Get.find<TransferController>();
   final AccountAPI accountAPI = Get.find<AccountAPI>();
   final AppController appController = Get.find<AppController>();
+  final RxBool _isFav = false.obs;
+
   ReceiptPage({Key key, @required this.ref}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    var k = appController.accountInfo.value.accountNo.toString() +
+        "_" +
+        appController.accountInfo.value.bankId.toString();
+    var f = appController.preferences.getBool(k);
+    if (f == null) {
+      appController.preferences.setBool(k, false);
+    } else {
+      _isFav.value = f;
+    }
+
     return Scaffold(
       backgroundColor: Color(0xff1C75FF),
       body: SafeArea(
@@ -34,7 +46,7 @@ class ReceiptPage extends StatelessWidget {
             SizedBox(
               height: getScreenHeight(20),
             ),
-            _buildFavButton(),
+            _buildFavButton(k),
             SizedBox(
               height: getScreenHeight(80),
             ),
@@ -69,33 +81,52 @@ class ReceiptPage extends StatelessWidget {
     );
   }
 
-  Padding _buildFavButton() {
-    return Padding(
-      padding: EdgeInsets.only(
-        right: getScreenWidth(40),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            width: 39,
-            height: 37,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
-              color: Color(0xff47AEFC),
+  _buildFavButton(String k) {
+    return GestureDetector(
+      onTap: () {
+        _isFav.value = !_isFav.value;
+        appController.preferences.setBool(k, _isFav.value);
+      },
+      child: Padding(
+        padding: EdgeInsets.only(
+          right: getScreenWidth(40),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 39,
+              height: 37,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: Color(0xff47AEFC),
+              ),
+              child: Center(
+                  child: Obx(
+                () => !_isFav.value
+                    ? SizedBox()
+                    : Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                      ),
+              )),
             ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Text(
-            'เพิ่มในรายการโปรด',
-            style: TextStyle(
-              fontSize: getScreenWidth(15),
-              color: Color(0xffFFFFFF),
+            SizedBox(
+              width: 5,
             ),
-          ),
-        ],
+            Text(
+              'เพิ่มในรายการโปรด',
+              style: TextStyle(
+                fontSize: getScreenWidth(15),
+                color: Color(0xffFFFFFF),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

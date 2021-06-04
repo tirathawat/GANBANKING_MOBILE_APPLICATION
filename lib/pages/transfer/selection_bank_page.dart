@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:get/get.dart';
 
 class SelectionBankPage extends StatelessWidget {
   final BankAPI bankAPI = Get.find<BankAPI>();
+  final AppController appController = Get.find<AppController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,11 +20,12 @@ class SelectionBankPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Obx(
-        () => bankAPI.bank.value == null
+        () => appController.bank.value == null
             ? SizedBox()
             : ListView(
-                children: List.generate(bankAPI.bank.value.length, (index) {
-                  var data = bankAPI.bank.value[index];
+                children:
+                    List.generate(appController.bank.value.length, (index) {
+                  var data = appController.bank.value[index];
                   return _buildBankItem(
                       index, data.bankName, data.bankColor, data.bankLogo);
                 }),
@@ -34,7 +37,7 @@ class SelectionBankPage extends StatelessWidget {
   _buildBankItem(int index, String name, String colorCode, String icon) {
     return GestureDetector(
       onTap: () {
-        bankAPI.selectedBank.value = index;
+        appController.selectedBank.value = index;
         Get.back();
       },
       child: Container(

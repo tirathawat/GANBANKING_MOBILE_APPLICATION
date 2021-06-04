@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:ganbanking/constants/api.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/models/bank_model.dart';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class BankAPI extends GetxController {
-  Rxn<List<BankModel>> bank = Rxn<List<BankModel>>();
-  RxInt selectedBank = 0.obs;
+  final AppController appController = Get.find<AppController>();
   @override
   void onInit() async {
     super.onInit();
@@ -21,7 +21,8 @@ class BankAPI extends GetxController {
       headers: {"Content-type": "application/json"},
     ).then(
       (value) {
-        bank.value = bankModelFromJson(utf8.decode(value.bodyBytes));
+        appController.bank.value =
+            bankModelFromJson(utf8.decode(value.bodyBytes));
       },
     );
   }

@@ -11,6 +11,7 @@ class FirstTransferingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xFFF9F9FB),
       body: Column(
         verticalDirection: VerticalDirection.down,

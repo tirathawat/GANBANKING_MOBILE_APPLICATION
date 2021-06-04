@@ -76,7 +76,8 @@ class ConfirmTransferingPage extends StatelessWidget {
                         int.parse(transferController.accountNoTo.text
                             .replaceAll("-", "")),
                         double.parse(transferController.amount.text),
-                        bankAPI.bank.value[bankAPI.selectedBank.value].bankId,
+                        appController.bank
+                            .value[appController.selectedBank.value].bankId,
                         transferController.memo.text)
                     .then((value) {
                   Get.back();
