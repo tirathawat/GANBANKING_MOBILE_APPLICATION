@@ -70,7 +70,10 @@ class ConfirmTransferingPage extends StatelessWidget {
             ),
             child: Defaultbutton(
               onPress: () async {
-                Get.dialog(CustomProgressIndicator());
+                Get.dialog(
+                  CustomProgressIndicator(),
+                  barrierDismissible: false,
+                );
                 await accountAPI
                     .transfer(
                         int.parse(transferController.accountNoTo.text

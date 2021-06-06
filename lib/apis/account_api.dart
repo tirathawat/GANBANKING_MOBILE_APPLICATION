@@ -1,35 +1,127 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/api.dart';
 import 'package:ganbanking/controllers/app_controller.dart';
+import 'package:ganbanking/controllers/transfer_controller.dart';
 import 'package:ganbanking/models/account_info_model.dart';
 import 'package:ganbanking/models/account_model.dart';
+import 'package:ganbanking/models/last_transfer_model.dart';
 import 'package:ganbanking/models/transaction_model.dart';
 import 'package:ganbanking/pages/fill_password_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import 'customer_api.dart';
-
 class AccountAPI extends GetxController {
   AppController appController = Get.find<AppController>();
+  final TransferController transferController = Get.put(TransferController());
   @override
   void onInit() async {
-    super.onInit();
-    print(FirebaseAuth.instance.currentUser.uid);
-    await CustomerAPI.hasCustomerSession().then((value) async {
-      print(value);
-      if (!value) {
-        Get.to(FillPasswordPage()).then((value) async {
-          await getAccountList();
-          await getTransaction();
-        });
+    print("start get account list");
+    getAccountList().then((value) {
+      print("get account list complete");
+
+      if (value) {
+        var accountNo = appController
+            .accounts.value[appController.selectedAccount.value].accountNo
+            .toString();
+        getTransaction();
+        getQrcode(accountNo);
+        getLastedTransfer(accountNo);
       } else {
-        await getAccountList();
-        await getTransaction();
+        Get.to(FillPasswordPage()).then((value) async {
+          getAccountList().then((value) {
+            var accountNo = appController
+                .accounts.value[appController.selectedAccount.value].accountNo
+                .toString();
+            getTransaction();
+            getQrcode(accountNo);
+            getLastedTransfer(accountNo);
+          });
+        });
       }
     });
+    super.onInit();
+  }
+
+  Future<bool> getInfoByQrcode(String qrcode) async {
+    print("qrcode : $qrcode");
+    return await http
+        .post(
+      Uri.parse("${API.BASE_URL}/mobile/account/infobyqrcode"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "phone": FirebaseAuth.instance.currentUser.phoneNumber
+              .replaceAll("+66", "0"),
+          "token": FirebaseAuth.instance.currentUser.uid,
+          "qrcode": qrcode,
+        },
+      ),
+    )
+        .then(
+      (value) {
+        if (value.statusCode == 200) {
+          print(value.body);
+          var data = accountInfoModelFromJson(value.body);
+          transferController.accountNoTo.text =
+              Util.formatAccountNo(data.accountNo.toString());
+
+          appController.selectedBank.value = appController.bank.value.indexOf(
+              appController.bank.value
+                  .firstWhere((element) => element.bankId == data.bankId));
+          return true;
+        }
+
+        return false;
+      },
+    );
+  }
+
+  Future<bool> getLastedTransfer(String accountNo) async {
+    return await http
+        .post(
+      Uri.parse("${API.BASE_URL}/mobile/account/lasttransfer"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "phone": FirebaseAuth.instance.currentUser.phoneNumber
+              .replaceAll("+66", "0"),
+          "token": FirebaseAuth.instance.currentUser.uid,
+          "account_no": accountNo,
+        },
+      ),
+    )
+        .then(
+      (value) {
+        appController.lastedTransactions.value =
+            lastTransferModelFromJson(utf8.decode(value.bodyBytes));
+        return value.statusCode == 200;
+      },
+    );
+  }
+
+  Future<bool> getQrcode(String accoutNo) async {
+    return await http
+        .post(
+      Uri.parse("${API.BASE_URL}/mobile/customer/qrcode"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+        {
+          "phone": FirebaseAuth.instance.currentUser.phoneNumber
+              .replaceAll("+66", "0"),
+          "token": FirebaseAuth.instance.currentUser.uid,
+          "account_no": accoutNo,
+        },
+      ),
+    )
+        .then(
+      (value) {
+        appController.qrcode.value = value.body;
+        return value.statusCode == 200;
+      },
+    );
   }
 
   Future<String> transfer(
@@ -106,7 +198,7 @@ class AccountAPI extends GetxController {
     );
   }
 
-  Future<void> getAccountList() async {
+  Future<bool> getAccountList() async {
     return await http
         .post(
       Uri.parse("${API.BASE_URL}/mobile/account/infobycustomer"),
@@ -121,10 +213,13 @@ class AccountAPI extends GetxController {
     )
         .then(
       (value) {
-        print("value in getAccountList");
-        print(value.body);
-        appController.accounts.value =
-            accountModelFromJson(utf8.decode(value.bodyBytes));
+        if (value.statusCode == 200) {
+          appController.accounts.value =
+              accountModelFromJson(utf8.decode(value.bodyBytes));
+          return true;
+        } else {
+          return false;
+        }
       },
     );
   }

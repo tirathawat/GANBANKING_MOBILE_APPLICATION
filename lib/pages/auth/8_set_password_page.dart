@@ -135,7 +135,10 @@ class SetPasswordPage extends StatelessWidget {
     if (passwordController.text.length != 6) {
       Get.snackbar("แจ้งเตือน", "กรุณากรอกรหัสผ่านจำนวน 6 หลัก");
     } else {
-      Get.dialog(CustomProgressIndicator());
+      Get.dialog(
+        CustomProgressIndicator(),
+        barrierDismissible: false,
+      );
       await CustomerAPI.createCustomerKey(
               variableController.phoneController.text, passwordController.text)
           .then((value) {

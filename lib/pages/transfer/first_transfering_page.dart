@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
-import 'package:ganbanking/pages/transfer/qr_scan_page.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
+import 'package:ganbanking/controllers/transfer_controller.dart';
 import 'package:ganbanking/pages/transfer/second_transfering_page.dart';
+import 'package:ganbanking/pages/transfer/selection_bank_page.dart';
+import 'package:ganbanking/services/qr_scan_service.dart';
+import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 
 class FirstTransferingPage extends StatelessWidget {
+  final AppController appController = Get.find<AppController>();
+  final AccountAPI accountAPI = Get.find<AccountAPI>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,17 +59,16 @@ class FirstTransferingPage extends StatelessWidget {
               _buildMenuButton(
                 "G Bank",
                 Assets.PEOPLE,
-                () => SecondTransferingPage(),
+                page: () => SecondTransferingPage(),
               ),
               _buildMenuButton(
                 "ต่างธนาคาร",
                 Assets.BANK,
-                () => SecondTransferingPage(),
+                page: () => SelectionBankPage(gotoTransfer: true),
               ),
               _buildMenuButton(
                 "Scan QR",
                 Assets.QRCODE,
-                () => QRScanPage(),
               ),
             ],
           ),
@@ -70,10 +77,30 @@ class FirstTransferingPage extends StatelessWidget {
     );
   }
 
-  _buildMenuButton(String text, String icon, Function page) {
+  _buildMenuButton(String text, String icon, {Function page}) {
     return InkWell(
-      onTap: () {
-        Get.to(page);
+      onTap: () async {
+        if (page != null)
+          Get.to(page);
+        else
+          await QrScanService.scan().then((value) async {
+            if (value == null) {
+              Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
+            } else {
+              Get.dialog(
+                CustomProgressIndicator(),
+                barrierDismissible: false,
+              );
+              await accountAPI.getInfoByQrcode(value).then((value) {
+                Get.back();
+                if (value) {
+                  Get.to(SecondTransferingPage());
+                } else {
+                  Get.snackbar("แจ้งเตือน", "Qrcode ไม่ถูกต้อง");
+                }
+              });
+            }
+          });
       },
       child: Column(
         children: [
@@ -107,62 +134,105 @@ class FirstTransferingPage extends StatelessWidget {
   }
 
   _buildListFav() {
+    var list = appController.preferences
+        .getKeys()
+        .toList()
+        .where((element) => element.split('_')[0] == 'fav')
+        .toList();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(
-          5,
-          (index) => _buildFavButton(
-              'assets/images/Rectangle Copy 3.png', 'Hailey', '+090078601'),
-        ),
-      ),
+      child: list.length == 0
+          ? Container(
+              height: 164,
+              width: Get.width,
+              alignment: Alignment.center,
+              child: Text("ท่านยังไม่มีรายการโปรด"),
+            )
+          : Row(
+              children: List.generate(
+                list.length,
+                (index) {
+                  var data = list[index].split("_");
+                  return _buildFavButton(
+                      data[4], data[2], Util.formatAccountNo(data[1]), data[3]);
+                },
+              ),
+            ),
     );
   }
 
-  _buildFavButton(String image, String name, String phone) {
-    return Container(
-      margin: EdgeInsets.only(
-        top: 10,
-        right: 10,
-        bottom: 10,
-      ),
-      height: 164,
-      width: 142,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Color(0xFFFFFFFF),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
-            spreadRadius: 3,
-            blurRadius: 3,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Image.asset(
-            image, //MOCK
-            height: 100,
-            width: 100,
-          ),
-          Text(
-            name,
-            style: TextStyle(
-              color: Color(0xff1C1939),
-              fontSize: getScreenWidth(13),
+  _buildFavButton(
+      String banklogo, String name, String accountNo, String bankid) {
+    return InkWell(
+      onTap: () {
+        appController.selectedBank.value = appController.bank.value.indexOf(
+            appController.bank.value
+                .firstWhere((element) => element.bankId.toString() == bankid));
+        TransferController transferController = Get.put(TransferController());
+        transferController.accountNoTo.text = Util.formatAccountNo(accountNo);
+
+        Get.to(SecondTransferingPage());
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+          top: 10,
+          right: 10,
+          bottom: 10,
+        ),
+        height: 164,
+        width: 142,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Color(0xFFFFFFFF),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              spreadRadius: 3,
+              blurRadius: 3,
+              offset: Offset(0, 3), // changes position of shadow
             ),
-          ),
-          Text(
-            phone,
-            style: TextStyle(
-              color: Color(0xff9EA6BE),
-              fontFamily: 'DMSans',
-              fontSize: getScreenWidth(12),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              width: 50,
+              height: 50,
+              alignment: Alignment.center,
+              child: Text(
+                banklogo,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: getScreenWidth(30),
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              name,
+              style: TextStyle(
+                color: Color(0xff1C1939),
+                fontSize: getScreenWidth(16),
+              ),
+            ),
+            Text(
+              accountNo,
+              style: TextStyle(
+                color: Color(0xff9EA6BE),
+                fontFamily: 'DMSans',
+                fontSize: getScreenWidth(14),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -200,6 +270,7 @@ class FirstTransferingPage extends StatelessWidget {
           horizontal: getScreenWidth(23),
         ),
         color: Colors.white,
+        width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -207,39 +278,10 @@ class FirstTransferingPage extends StatelessWidget {
               height: 18,
             ),
             Text(
-              "รายชื่อผู้ติดต่อล่าสุด",
+              "รายชื่อผู้โอนล่าสุด",
               style: TextStyle(
                 color: Color(0xff1C1939),
                 fontSize: getScreenWidth(18),
-              ),
-            ),
-            SizedBox(
-              height: 24,
-            ),
-            TextFormField(
-              style: TextStyle(
-                fontSize: getScreenWidth(14),
-                color: Colors.black,
-              ),
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                fillColor: Color(0xffF9F9FB),
-                filled: true,
-                hintText: "ค้นหา...",
-                hintStyle: TextStyle(
-                  fontSize: getScreenWidth(14),
-                  color: Color(0xff9EA6BE),
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: SvgPicture.asset(
-                    Assets.SEARCH,
-                  ),
-                ),
               ),
             ),
             SizedBox(
@@ -253,18 +295,29 @@ class FirstTransferingPage extends StatelessWidget {
     return Expanded(
       child: Container(
         color: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 25),
-          children: List.generate(
-            10,
-            (index) => Column(
-              children: [
-                _buildContactItem("Zayn Michel", '+090078601'),
-                Divider(
-                  height: 0.25,
-                  color: Color(0xffD2D1D7),
-                ),
-              ],
+        child: Obx(
+          () => ListView(
+            padding: EdgeInsets.symmetric(horizontal: 25),
+            children: List.generate(
+              appController.lastedTransactions.value == null
+                  ? 0
+                  : appController.lastedTransactions.value.length,
+              (index) {
+                var data = appController.lastedTransactions.value[index];
+                return Column(
+                  children: [
+                    _buildContactItem(
+                        data.accountName,
+                        Util.formatAccountNo(data.accountNo.toString()),
+                        data.bankId.toString(),
+                        data.accountNo.toString()),
+                    Divider(
+                      height: 0.25,
+                      color: Color(0xffD2D1D7),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -272,7 +325,8 @@ class FirstTransferingPage extends StatelessWidget {
     );
   }
 
-  _buildContactItem(String name, String phone) {
+  _buildContactItem(
+      String name, String phone, String bankid, String accountNo) {
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: 10,
@@ -281,7 +335,7 @@ class FirstTransferingPage extends StatelessWidget {
         title: Text(
           name,
           style: TextStyle(
-            fontSize: getScreenWidth(16),
+            fontSize: getScreenWidth(18),
             color: Color(0xff1C1939),
           ),
         ),
@@ -289,27 +343,40 @@ class FirstTransferingPage extends StatelessWidget {
           phone,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: getScreenWidth(12),
+            fontSize: getScreenWidth(14),
             color: Color(0xff9EA6BE),
           ),
         ),
-        trailing: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 27),
+        trailing: InkWell(
+          onTap: () {
+            appController.selectedBank.value = appController.bank.value.indexOf(
+                appController.bank.value.firstWhere(
+                    (element) => element.bankId.toString() == bankid));
+            TransferController transferController =
+                Get.put(TransferController());
+            transferController.accountNoTo.text =
+                Util.formatAccountNo(accountNo);
+
+            Get.to(SecondTransferingPage());
+          },
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xff9EA6BE),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 28,
-                vertical: 10,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 27),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color(0xff9EA6BE),
               ),
-              child: Text(
-                'โอน',
-                style: TextStyle(
-                  fontSize: getScreenWidth(12),
-                  color: Color(0xffFFFFFF),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 10,
+                ),
+                child: Text(
+                  'โอน',
+                  style: TextStyle(
+                    fontSize: getScreenWidth(14),
+                    color: Color(0xffFFFFFF),
+                  ),
                 ),
               ),
             ),

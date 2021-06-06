@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
@@ -222,7 +223,7 @@ class SummaryPage extends StatelessWidget {
             Text(
               NumberFormat.currency().format(amount).replaceAll("USD", ""),
               style: TextStyle(
-                fontSize: getScreenWidth(25),
+                fontSize: getScreenWidth(18),
                 color: Color(hexColor('#1C1939')),
               ),
             ),

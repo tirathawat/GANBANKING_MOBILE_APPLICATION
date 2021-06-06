@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ganbanking/constants/api.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:http/http.dart' as http;
 
 class CustomerAPI extends GetxController {
+  static bool hasPasscode = false;
   static Future<bool> hasCustomerSession() async {
     return await http
         .post(
@@ -51,17 +53,23 @@ class CustomerAPI extends GetxController {
     )
         .then(
       (value) {
-        if (value.body.contains("true"))
-          return true;
+        if (value.body == 'dont have passcode')
+          hasPasscode = false;
         else
+          hasPasscode = true;
+
+        if (value.statusCode == 200) {
+          return value.body != 'dont have customer';
+        } else {
           return false;
+        }
       },
     ).onError((_, stackTrace) {
       return false;
     });
   }
 
-  static Future<bool> createCustomerSession(
+  static Future<String> createCustomerSession(
       String phoneNumber, String password) async {
     return await http
         .post(
@@ -76,11 +84,15 @@ class CustomerAPI extends GetxController {
       ),
     )
         .then((value) {
-      return value.statusCode == 200;
-    });
+      if (value.statusCode == 200)
+        return utf8.decode(value.bodyBytes);
+      else
+        return null;
+    }).onError((error, stackTrace) => null);
   }
 
   static Future<bool> hasCustomerKey(String phone) async {
+    print(phone);
     return await http
         .post(
       Uri.parse("${API.BASE_URL}/mobile/customer/haskey"),
@@ -96,7 +108,10 @@ class CustomerAPI extends GetxController {
         else
           return false;
       },
-    );
+    ).onError((error, stackTrace) {
+      print(error);
+      return false;
+    });
   }
 
   static Future<bool> createCustomerKey(String phone, String pwd) async {
@@ -109,11 +124,11 @@ class CustomerAPI extends GetxController {
         {
           "customer_phone_number": phone,
           "customer_key": pwd,
-          "token": FirebaseAuth.instance.currentUser.uid
         },
       ),
     )
         .then((value) {
+      print(value.body);
       return value.statusCode == 200;
     });
   }

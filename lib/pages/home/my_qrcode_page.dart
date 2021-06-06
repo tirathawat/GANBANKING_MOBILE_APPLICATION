@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
+import 'package:get/get.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class MyQrCodePage extends StatelessWidget {
+  final AppController appController = Get.find<AppController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +82,13 @@ class MyQrCodePage extends StatelessWidget {
         SizedBox(
           height: getScreenHeight(34),
         ),
-        SvgPicture.asset(Assets.QRCODE),
+        Obx(
+          () => QrImage(
+            data: appController.qrcode.value,
+            version: QrVersions.auto,
+            size: 200.0,
+          ),
+        ),
       ],
     ));
   }
@@ -94,29 +105,42 @@ class MyQrCodePage extends StatelessWidget {
             'บัญชี',
             style: TextStyle(
               color: Color(0xff9EA6BE),
-              fontSize: getScreenWidth(12),
+              fontSize: getScreenWidth(16),
             ),
             textAlign: TextAlign.start,
           ),
           SizedBox(
             height: getScreenHeight(10),
           ),
-          Text(
-            'นายแกน มงคลากร',
-            style: TextStyle(
-              color: Color(0xff1C1939),
-              fontSize: getScreenWidth(20),
-              fontWeight: FontWeight.bold,
+          Obx(
+            () => Text(
+              appController.accounts.value == null ||
+                      appController.accounts.value.length == 0
+                  ? ""
+                  : appController.accounts
+                      .value[appController.selectedAccount.value].accountName,
+              style: TextStyle(
+                color: Color(0xff1C1939),
+                fontSize: getScreenWidth(20),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           SizedBox(
             height: getScreenHeight(10),
           ),
-          Text(
-            'XXX-X-X888-X',
-            style: TextStyle(
-              color: Color(0xff9EA6BE),
-              fontSize: getScreenWidth(13),
+          Obx(
+            () => Text(
+              appController.accounts.value == null ||
+                      appController.accounts.value.length == 0
+                  ? ""
+                  : Util.formatAccountNo(appController.accounts
+                      .value[appController.selectedAccount.value].accountNo
+                      .toString()),
+              style: TextStyle(
+                color: Color(0xff9EA6BE),
+                fontSize: getScreenWidth(16),
+              ),
             ),
           ),
         ],

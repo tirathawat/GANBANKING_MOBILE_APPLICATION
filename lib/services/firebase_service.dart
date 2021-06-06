@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 class FirebaseService {
   static String _verificationId;
   static Future<void> requestOtp(String phoneNumber) async {
+    print(phoneNumber);
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: "+66123456789",
+        //phoneNumber: phoneNumber,
         timeout: const Duration(
           seconds: 60,
         ),
@@ -23,7 +25,6 @@ class FirebaseService {
         codeSent: (String code, int number) {
           _verificationId = code;
           print("verificationId: $code");
-
           Get.to(() => VerifyingNumberPage());
         },
         codeAutoRetrievalTimeout: (String timeout) {});

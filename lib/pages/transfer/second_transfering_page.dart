@@ -23,10 +23,20 @@ class SecondTransferingPage extends StatelessWidget {
   final RxString unmaskedInputValue = ''.obs;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: _buildAppBar(),
-      body: _buildContent(),
+    return WillPopScope(
+      onWillPop: () async {
+        Get.back();
+        transferController.accountNoTo.clear();
+        transferController.amount.clear();
+        transferController.memo.clear();
+        appController.selectedBank.value = 0;
+        return true;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: _buildAppBar(),
+        body: _buildContent(),
+      ),
     );
   }
 
@@ -209,7 +219,10 @@ class SecondTransferingPage extends StatelessWidget {
                   transferController.amount.text == '') {
                 Get.snackbar("แจ้งเตือน", "เลขบัญชีหรือจำนวนเงินไม่ถูกต้อง");
               } else {
-                Get.dialog(CustomProgressIndicator());
+                Get.dialog(
+                  CustomProgressIndicator(),
+                  barrierDismissible: false,
+                );
                 await accountAPI
                     .getAccountByID(
                         transferController.accountNoTo.text.replaceAll("-", ""),
@@ -326,40 +339,43 @@ class SecondTransferingPage extends StatelessWidget {
       onTap: () {
         Get.to(() => SelectionBankPage());
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 24,
-        ),
-        decoration: BoxDecoration(
-          color: Color(int.parse(
-                  "0xFF${appController.bank.value[appController.selectedBank.value].bankColor}"))
-              .withOpacity(.26),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Text(
-              appController
-                  .bank.value[appController.selectedBank.value].bankLogo,
-              style: TextStyle(
-                fontSize: getScreenWidth(30),
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF003DFF),
+      child: Obx(
+        () => Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 24,
+          ),
+          decoration: BoxDecoration(
+            color: Color(int.parse(
+                    "0xFF${appController.bank.value[appController.selectedBank.value].bankColor}"))
+                .withOpacity(.26),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              Text(
+                appController
+                    .bank.value[appController.selectedBank.value].bankLogo,
+                style: TextStyle(
+                  fontSize: getScreenWidth(30),
+                  fontWeight: FontWeight.bold,
+                  color: Color(int.parse(
+                      "0xFF${appController.bank.value[appController.selectedBank.value].bankColor}")),
+                ),
               ),
-            ),
-            SizedBox(
-              width: 16,
-            ),
-            Text(
-              appController
-                  .bank.value[appController.selectedBank.value].bankName,
-              style: TextStyle(
-                fontSize: getScreenWidth(15),
-                fontWeight: FontWeight.w500,
+              SizedBox(
+                width: 16,
               ),
-            ),
-          ],
+              Text(
+                appController
+                    .bank.value[appController.selectedBank.value].bankName,
+                style: TextStyle(
+                  fontSize: getScreenWidth(15),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

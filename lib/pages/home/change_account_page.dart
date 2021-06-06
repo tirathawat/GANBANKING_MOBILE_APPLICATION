@@ -50,10 +50,15 @@ class ChangeAccountPage extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         appController.selectedAccount.value = index;
-        Get.dialog(CustomProgressIndicator());
+        Get.dialog(
+          CustomProgressIndicator(),
+          barrierDismissible: false,
+        );
         await accountAPI.getTransaction().then((value) {
           Get.off(() => HomePage());
         });
+        accountAPI.getQrcode(accountNo.toString());
+        accountAPI.getLastedTransfer(accountNo.toString());
       },
       child: Container(
         margin: EdgeInsets.symmetric(

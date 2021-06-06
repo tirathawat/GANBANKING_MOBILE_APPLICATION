@@ -50,7 +50,7 @@ class MobileNumberPage extends StatelessWidget {
                   onInputValidated: (bool value) {
                     print("VALIDATE PHONE : $value");
                     _validated.value = value;
-                    //TODO remove this
+
                     if (variableController.phoneController.text == '0123456789')
                       _validated.value = true;
                   },
@@ -114,14 +114,17 @@ class MobileNumberPage extends StatelessWidget {
 
   void _onPressSend() async {
     if (_validated.value) {
-      Get.dialog(CustomProgressIndicator());
+      Get.dialog(
+        CustomProgressIndicator(),
+        barrierDismissible: false,
+      );
 
       bool hasCustomer = await CustomerAPI.hasCustomer(
           variableController.phoneController.text.replaceFirst("+66", "0"));
 
       if (hasCustomer) {
         await FirebaseService.requestOtp(
-            variableController.phoneController.text);
+            variableController.phoneController.text.replaceFirst("0", "+66"));
       } else {
         Get.back();
         Get.snackbar("แจ้งเตือน", "ท่านยังไม่ได้ทำการเปิดบัญชี");

@@ -82,7 +82,8 @@ class HomePage extends StatelessWidget {
                 text: TextSpan(
                   children: <TextSpan>[
                     TextSpan(
-                        text: appController.accounts.value == null
+                        text: appController.accounts.value == null ||
+                                appController.accounts.value.length == 0
                             ? '0.00'
                             : '${NumberFormat.currency().format(appController.accounts.value[appController.selectedAccount.value].accountBalance).replaceAll("USD", "")}',
                         style: TextStyle(
@@ -107,7 +108,8 @@ class HomePage extends StatelessWidget {
               children: [
                 Obx(
                   () => Text(
-                    appController.accounts.value == null
+                    appController.accounts.value == null ||
+                            appController.accounts.value.length == 0
                         ? 'บัญชีออมทรัพย์ '
                         : "บัญชีออมทรัพย์ ${Util.formatAccountNo(appController.accounts.value[appController.selectedAccount.value].accountNo.toString())}",
                     style: TextStyle(
@@ -146,19 +148,25 @@ class HomePage extends StatelessWidget {
                 children: [
                   Obx(() => _buildIncomeComponent(
                         "รายจ่าย",
-                        appController.transactions.value == null
+                        appController.accounts.value == null ||
+                                appController.accounts.value.length == 0
                             ? 0
                             : appController
-                                .transactions.value.incomeOutcome[0].outcomeAll,
+                                .accounts
+                                .value[appController.selectedAccount.value]
+                                .outcomeAll,
                         Color(0xFFFF5141),
                       )),
                   Spacer(),
                   Obx(() => _buildIncomeComponent(
                         "รายรับ",
-                        appController.transactions.value == null
+                        appController.accounts.value == null ||
+                                appController.accounts.value.length == 0
                             ? 0
                             : appController
-                                .transactions.value.incomeOutcome[0].incomeAll,
+                                .accounts
+                                .value[appController.selectedAccount.value]
+                                .incomeAll,
                         Color(0xFF44EF44),
                       )),
                 ],
@@ -174,10 +182,14 @@ class HomePage extends StatelessWidget {
   }
 
   void _onSignOut() async {
-    Get.dialog(CustomProgressIndicator());
+    Get.dialog(
+      CustomProgressIndicator(),
+      barrierDismissible: false,
+    );
     CustomerAPI.signOut();
     await FirebaseAuth.instance.signOut().then((value) {
       Get.back();
+      appController.clear();
       Get.offAll(() => SignInPage1());
     });
   }

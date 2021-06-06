@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/controllers/app_controller.dart';
+import 'package:ganbanking/pages/transfer/second_transfering_page.dart';
 import 'package:get/get.dart';
 
 class SelectionBankPage extends StatelessWidget {
   final BankAPI bankAPI = Get.find<BankAPI>();
   final AppController appController = Get.find<AppController>();
+  final bool gotoTransfer;
+
+  SelectionBankPage({Key key, this.gotoTransfer = false}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,8 +41,12 @@ class SelectionBankPage extends StatelessWidget {
   _buildBankItem(int index, String name, String colorCode, String icon) {
     return GestureDetector(
       onTap: () {
-        appController.selectedBank.value = index;
-        Get.back();
+        if (gotoTransfer) {
+          Get.to(() => SecondTransferingPage());
+        } else {
+          appController.selectedBank.value = index;
+          Get.back();
+        }
       },
       child: Container(
         decoration: BoxDecoration(

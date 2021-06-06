@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1049575251553-g7dah11mom26rqt2k3kvhd6vvlrnhrgu.apps.googleusercontent.com",
+          "client_id": "1049575251553-oc6nlnj1udgn8ibenge8tuk97i9qh36o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.ganbanking",
-            "certificate_hash": "e16dd85cb0faa2eae2aba4028e92aa4fb6cf7f7f"
+            "certificate_hash": "da1d769fd9a6ab11b6b8c127d6813a4e8e55f8c5"
           }
         },
         {

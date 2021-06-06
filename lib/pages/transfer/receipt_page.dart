@@ -23,9 +23,17 @@ class ReceiptPage extends StatelessWidget {
   ReceiptPage({Key key, @required this.ref}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var k = appController.accountInfo.value.accountNo.toString() +
+    var k = 'fav' +
+        '_' +
+        appController.accountInfo.value.accountNo.toString() +
         "_" +
-        appController.accountInfo.value.bankId.toString();
+        appController.accountInfo.value.accountName.toString() +
+        "_" +
+        appController.accountInfo.value.bankId.toString() +
+        "_" +
+        appController.accountInfo.value.bankLogo.toString() +
+        "_" +
+        appController.accountInfo.value.bankColor.toString();
     var f = appController.preferences.getBool(k);
     if (f == null) {
       appController.preferences.setBool(k, false);

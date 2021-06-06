@@ -2,12 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ganbanking/apis/customer_api.dart';
 import 'package:ganbanking/config/size.dart';
+import 'package:ganbanking/controllers/app_controller.dart';
+import 'package:ganbanking/models/account_model.dart';
 import 'package:ganbanking/widgets/custom_progress_indicator.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class FillPasswordPage extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
+  final AppController appController = Get.find<AppController>();
   FillPasswordPage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,7 @@ class FillPasswordPage extends StatelessWidget {
                   child: PinCodeTextField(
                     appContext: context,
                     length: 6,
-                    obscureText: false,
+                    obscureText: true,
                     pinTheme: PinTheme(
                       shape: PinCodeFieldShape.underline,
                       fieldHeight: 50,
@@ -92,7 +95,7 @@ class FillPasswordPage extends StatelessWidget {
                     ),
                     onPressed: _onPressButton,
                     child: Text(
-                      'บันทึก',
+                      'ยืนยัน',
                       style: TextStyle(
                         fontSize: getScreenWidth(17),
                         color: Color(0xffffffff),
@@ -115,18 +118,22 @@ class FillPasswordPage extends StatelessWidget {
     if (passwordController.text.length != 6) {
       Get.snackbar("แจ้งเตือน", "กรุณากรอกรหัสผ่านจำนวน 6 หลัก");
     } else {
-      Get.dialog(CustomProgressIndicator());
+      Get.dialog(
+        CustomProgressIndicator(),
+        barrierDismissible: false,
+      );
       await CustomerAPI.createCustomerSession(
               FirebaseAuth.instance.currentUser.phoneNumber
                   .replaceAll("+66", "0"),
               passwordController.text)
-          .then((value) {
+          .then((value) async {
         Get.back();
-
-        if (value)
+        if (value != null) {
+          appController.accounts.value = accountModelFromJson(value);
           Get.back();
-        else
+        } else {
           Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
+        }
       });
     }
   }
