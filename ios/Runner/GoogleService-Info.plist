@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1049575251553-144ursrdjps6o04h7u7hun52kgcdj3qs.apps.googleusercontent.com</string>
+	<string>1049575251553-bbp2cg2fs86ldm3do1ha9tnrhk9c0jis.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1049575251553-144ursrdjps6o04h7u7hun52kgcdj3qs</string>
+	<string>com.googleusercontent.apps.1049575251553-bbp2cg2fs86ldm3do1ha9tnrhk9c0jis</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1049575251553-oc6nlnj1udgn8ibenge8tuk97i9qh36o.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDSHV7RzUGliYFpFITy2PLBTScKypECUL4</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.ganbanking</string>
+	<string>com.sukitech.ganbanking</string>
 	<key>PROJECT_ID</key>
 	<string>ganbanking-46b0a</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1049575251553:ios:eb28f876b44f3fd7af9420</string>
+	<string>1:1049575251553:ios:782717f2cba562abaf9420</string>
 </dict>
 </plist>

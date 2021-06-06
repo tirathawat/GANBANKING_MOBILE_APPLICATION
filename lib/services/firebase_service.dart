@@ -7,8 +7,8 @@ class FirebaseService {
   static Future<void> requestOtp(String phoneNumber) async {
     print(phoneNumber);
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: "+66123456789",
-        //phoneNumber: phoneNumber,
+        //phoneNumber: "+66123456789",
+        phoneNumber: phoneNumber,
         timeout: const Duration(
           seconds: 60,
         ),

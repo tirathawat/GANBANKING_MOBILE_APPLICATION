@@ -14,6 +14,7 @@ class VerifyingNumberPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xffffffff),
       body: Column(
         children: [

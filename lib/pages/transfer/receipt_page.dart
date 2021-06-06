@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ganbanking/apis/account_api.dart';
-import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
@@ -72,10 +71,15 @@ class ReceiptPage extends StatelessWidget {
       ),
       child: Defaultbutton(
         onPress: () {
-          Get.offAll(() => HomePage()).then((value) {
-            Get.put(BankAPI());
-            Get.put(AccountAPI());
-          });
+          accountAPI.getAccountList();
+          accountAPI.getLastedTransfer(appController
+              .accounts.value[appController.selectedAccount.value].accountNo
+              .toString());
+          accountAPI.getTransaction();
+          transferController.accountNoTo.clear();
+          transferController.amount.clear();
+
+          Get.offAll(() => HomePage()).then((value) {});
         },
         text: Text(
           'กลับหน้าหลัก',

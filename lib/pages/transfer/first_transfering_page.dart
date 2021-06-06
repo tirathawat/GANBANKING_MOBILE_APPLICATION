@@ -6,6 +6,7 @@ import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
 import 'package:ganbanking/controllers/app_controller.dart';
 import 'package:ganbanking/controllers/transfer_controller.dart';
+import 'package:ganbanking/pages/transfer/qr_scan_page.dart';
 import 'package:ganbanking/pages/transfer/second_transfering_page.dart';
 import 'package:ganbanking/pages/transfer/selection_bank_page.dart';
 import 'package:ganbanking/services/qr_scan_service.dart';
@@ -69,6 +70,7 @@ class FirstTransferingPage extends StatelessWidget {
               _buildMenuButton(
                 "Scan QR",
                 Assets.QRCODE,
+                page: () => QRScanPage(),
               ),
             ],
           ),
@@ -82,7 +84,7 @@ class FirstTransferingPage extends StatelessWidget {
       onTap: () async {
         if (page != null)
           Get.to(page);
-        else
+        else {
           await QrScanService.scan().then((value) async {
             if (value == null) {
               Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
@@ -101,6 +103,7 @@ class FirstTransferingPage extends StatelessWidget {
               });
             }
           });
+        }
       },
       child: Column(
         children: [
@@ -137,7 +140,9 @@ class FirstTransferingPage extends StatelessWidget {
     var list = appController.preferences
         .getKeys()
         .toList()
-        .where((element) => element.split('_')[0] == 'fav')
+        .where((element) =>
+            element.split('_')[0] == 'fav' &&
+            appController.preferences.getBool(element))
         .toList();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
