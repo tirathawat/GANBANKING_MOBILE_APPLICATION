@@ -36,12 +36,18 @@ class AccountModel {
         accountName: json["account_name"],
         accountNo: json["account_no"],
         accountTypeName: json["account_type_name"],
-        incomeAll: double.parse(json["income_all"].toString()),
-        incomeCurrentMonth:
-            double.parse(json["income_current_month"].toString()),
-        outcomeAll: double.parse(json["outcome_all"].toString()),
-        outcomeCurrentMonth:
-            double.parse(json["outcome_current_month"].toString()),
+        incomeAll: json["income_all"] == null
+            ? 0
+            : double.parse(json["income_all"].toString()),
+        incomeCurrentMonth: json["income_current_month"] == null
+            ? 0
+            : double.parse(json["income_current_month"].toString()),
+        outcomeAll: json["outcome_all"] == null
+            ? 0
+            : double.parse(json["outcome_all"].toString()),
+        outcomeCurrentMonth: json["outcome_current_month"] == null
+            ? 0
+            : double.parse(json["outcome_current_month"].toString()),
       );
 
   Map<String, dynamic> toJson() => {

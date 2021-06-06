@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:ganbanking/apis/account_api.dart';
 import 'package:ganbanking/apis/bank_api.dart';
 import 'package:ganbanking/apis/customer_api.dart';
+import 'package:ganbanking/apis/promotion_api.dart';
 import 'package:ganbanking/config/size.dart';
 import 'package:ganbanking/config/util.dart';
 import 'package:ganbanking/constants/assets.dart';
@@ -24,6 +25,7 @@ class HomePage extends StatelessWidget {
   final AccountAPI accountAPI = Get.put(AccountAPI());
   final BankAPI bankAPI = Get.put(BankAPI());
   final AppController appController = Get.find<AppController>();
+  final PromotionAPI promotionAPI = Get.put(PromotionAPI());
   HomePage({Key key}) : super(key: key);
   hexColor(String colorhexcode) {
     String colornew = '0xff' + colorhexcode;
@@ -254,7 +256,7 @@ class HomePage extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              _buildPromotion(),
+              _buildPromotionList(),
             ],
           ),
         ),
@@ -345,18 +347,41 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  _buildPromotion() {
+  _buildPromotionList() {
+    return Obx(
+      () => appController.promotions.value == null ||
+              appController.promotions.value.length == 0
+          ? SizedBox()
+          : SizedBox(
+              width: double.infinity,
+              height: 300,
+              child: PageView(
+                  children: List.generate(appController.promotions.value.length,
+                      (index) {
+                var data = appController.promotions.value[index];
+                return _buildPromotionItem(
+                    data.promotionTitle, data.promotionDetail);
+              })),
+            ),
+    );
+  }
+
+  _buildPromotionItem(String title, String detail) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.all(const Radius.circular(8)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SvgPicture.asset(
-            Assets.PROMOTION,
-            fit: BoxFit.cover,
+          Container(
+            width: double.infinity,
+            child: SvgPicture.asset(
+              Assets.PROMOTION,
+              fit: BoxFit.cover,
+            ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
@@ -367,7 +392,7 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "ไก่ทอดฟรี",
+                  title,
                   style: TextStyle(
                     fontSize: getScreenWidth(16),
                     fontWeight: FontWeight.bold,
@@ -377,7 +402,7 @@ class HomePage extends StatelessWidget {
                   height: 15,
                 ),
                 Text(
-                  "เพียงเเค่จ่ายด้วย G Bank รับไปเลยไก่ทอดสิบสองตัวฟรี!",
+                  detail,
                   style: TextStyle(
                     fontSize: getScreenWidth(13),
                   ),

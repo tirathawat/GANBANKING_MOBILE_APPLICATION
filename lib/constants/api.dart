@@ -1,3 +1,3 @@
 class API {
-  static const String BASE_URL = 'https://deb03a391e5f.ngrok.io';
+  static const String BASE_URL = 'https://084e71cbd9bd.ngrok.io';
 }
