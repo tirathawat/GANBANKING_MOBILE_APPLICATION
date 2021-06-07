@@ -41,8 +41,8 @@ class SelectionBankPage extends StatelessWidget {
   _buildBankItem(int index, String name, String colorCode, String icon) {
     return GestureDetector(
       onTap: () {
+        appController.selectedBank.value = index;
         if (gotoTransfer) {
-          appController.selectedBank.value = index;
           Get.to(() => SecondTransferingPage());
         } else {
           Get.back();
