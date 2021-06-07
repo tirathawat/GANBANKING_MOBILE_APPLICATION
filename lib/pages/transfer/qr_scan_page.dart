@@ -150,22 +150,16 @@ class _QRScanPageState extends State<QRScanPage> {
     controller.scannedDataStream.listen((scanData) {
       if (scanData != null) {
         controller.pauseCamera().then((value) async {
-          await QrScanService.scan().then((value) async {
-            if (value == null) {
-              Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
+          Get.dialog(
+            CustomProgressIndicator(),
+            barrierDismissible: false,
+          );
+          await widget.accountAPI.getInfoByQrcode(scanData.code).then((value) {
+            Get.back();
+            if (value) {
+              Get.to(SecondTransferingPage());
             } else {
-              Get.dialog(
-                CustomProgressIndicator(),
-                barrierDismissible: false,
-              );
-              await widget.accountAPI.getInfoByQrcode(value).then((value) {
-                Get.back();
-                if (value) {
-                  Get.to(SecondTransferingPage());
-                } else {
-                  Get.snackbar("แจ้งเตือน", "Qrcode ไม่ถูกต้อง");
-                }
-              });
+              Get.snackbar("แจ้งเตือน", "Qrcode ไม่ถูกต้อง");
             }
           });
         });

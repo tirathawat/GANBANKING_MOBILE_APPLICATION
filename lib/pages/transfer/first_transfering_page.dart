@@ -85,6 +85,7 @@ class FirstTransferingPage extends StatelessWidget {
         if (page != null)
           Get.to(page);
         else {
+          print("aaa");
           await QrScanService.scan().then((value) async {
             if (value == null) {
               Get.snackbar("แจ้งเตือน", "เกิดข้อผิดพลาด");
